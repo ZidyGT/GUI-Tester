@@ -1,0 +1,35 @@
+{
+  "manifest_version": 2,
+
+  "name": "GUI Tester",
+  "description": "Tento doplněk testuje GUI elementy webové stránky",
+  "version": "0.1",
+    
+  "web_accessible_resources" : ["scenare.html"],
+
+  "background": {
+    "scripts": ["background.js"]
+  },
+  
+  "content_scripts": [ {
+    "matches": ["http://*/*","https://*/*"],
+    "js": ["jquery.min.js"]
+    } ],
+
+  "devtools_page": "devtools.html",
+
+  "browser_action": {
+    "default_icon":  "icon.png"
+  },
+  
+
+  "permissions": [
+    "unlimitedStorage",
+    "storage",
+    "tabs",
+    "activeTab",
+    "http://*/*",
+    "https://*/*",
+    "https://ajax.googleapis.com/"
+  ]
+}
