@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Painting</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="bootstrap/css/bootstrap-grid.min.css" rel="stylesheet">
+        <link href="bootstrap/css/homepage-reboot.css" rel="stylesheet">
+        <!-- Javascript -->
+        <script src="jquery.min.js"></script>
+        <script src="bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="script.js"></script>
+    </head>
+    <body>
+        <div class="container text-center " id="main">
+            <div class="page-header"><h1>Painting</h1></div>
+            <div class="panel panel-default">
+            <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-2">
+                    <h4>Shape</h4>
+                </div>
+                <div class="col-md-3">
+                     <h4>Shape Style</h4>
+                </div>
+                <div class="col-md-2">
+                     <h4>Fill color</h4>
+                </div>
+                <div class="col-md-2">
+                     <h4>Border Color</h4>
+                </div>
+                <div class="col-md-3">
+                     <h4>Border Size</h4>
+                </div>
+            </div>
+                </div>
+            <div class="panel-body">
+            <div class="row">
+                <div class="col-md-2 btn-group-vertical btn-group-sm">
+                    <button class="btn btn-primary">Čtverec</button>
+                    <button class="btn btn-primary">Kruh</button>
+                    <button class="btn btn-primary">Trojúhelník</button>
+                </div>
+                <div class="col-md-3 btn-group-vertical btn-group-sm">
+                    <button class="btn btn-success">S Okrajem bez výplně</button>
+                    <button class="btn btn-success">Bez Okrajem s výplní</button>
+                    <button class="btn btn-success">S okrajem s výplní</button>
+                </div>
+                <div class="col-md-2 btn-group-vertical btn-group-sm">
+                    <button class = "btn btn-default">Modrá</button>
+                    <button class = "btn btn-default">Červená</button>
+                    <button class = "btn btn-default">Zelená</button>
+                </div>
+                <div class="col-md-2 btn-group-vertical btn-group-sm">
+                    <button class = "btn btn-default">Modrá</button>
+                    <button class = "btn btn-default">Červená</button>
+                    <button class = "btn btn-default">Zelená</button>
+                </div>
+                <div class="col-md-3 btn-group-vertical btn-group-sm">
+                    <button class = "btn btn-default">Tlustý okraj</button>
+                    <button class = "btn btn-default">Střední okraj</button>
+                    <button class = "btn btn-default">Tenký okraj</button>
+                </div>
+            </div>
+                </div>
+        </div>
+
+            <div class="text-center">
+            <canvas style =" border: 2px solid red;border-radius: 4px" id="Canvas" width="800" height="400"></canvas>
+            </div>
+        </div>
+    </body>
+</html>
