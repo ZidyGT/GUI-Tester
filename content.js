@@ -1,76 +1,96 @@
+var ContentController = function (panel) {
+    this.panel = panel;
+    this.title;
+    this.pagetTitle;
+    this.port;
+    this.pageObjects = new Array();
+};
 
+ContentController.prototype.checkPanel = function () {
+    var check = $("body").find("#" + this.panel).length;
+    if (check === 0)
+        return true;
+    else
+        return false;
+};
 
-$(document).ready(function(event){
-                    if($("body").find("#GUITester").length === 0){
-                        getBasic();
-                        insertPanel();
-                       }
-                    
-		});
-        
-function getBasic(){
-    			var dom = $(":root");
-			var title = $(dom).find("h1").first();
-			var head = $(dom).find("p").first();
-			console.log("VĂ­tejte v nĂˇstroji GUI Tester");
-			console.log("StrĂˇnka s titulkem " + $(dom).find("title").text());
-			console.log("StrĂˇnka s nadpisem " + $(dom).find("h1").first().text());
-			console.log("StrĂˇnka s obsahem " + $(dom).find("p").first().text());	
-                        
-}
+ContentController.prototype.getPageBasic = function () {
+    var dom = $(":root");
+    this.title = $(dom).find("title").text();
+    this.pageTitle = $(dom).find("h1").first().text();
+    console.log("Vítejte GUI Tester");
+    console.log("Stránka s titulkem " + this.title);
+    console.log("Stránka s nadpisem " + this.pageTitle);
+};
 
-
-
-function insertPanel()
-{   
-    var url = chrome.extension.getURL("scenare.html");
-    $.get( url, function( data ) {
-         loadPanel(data);
-    });
-}
-
-function loadPanel(html){
-    try{
-    var page = $("body").children();  
-    $("body").children().remove();
-    $("body").append(html);
-    $("body").append("<div id='gui'></div");
-    $("#gui").append(page);
-    
-    }
-    catch(err){
+ContentController.prototype.loadPanel = function (html) {
+    try {
+        $("body").prepend(html);
+    } catch (err) {
         console.log(err.message);
-    } 
-    setListener();
-}
+    }
+};
 
-function setListener(){
-        $("#gui").find("button").each(function(){
-            $(this).click(function(){
-              addEvent($(this));
-            });
-        });
-        
-}
+ContentController.prototype.insertPanel = function ()
+{
+    var url = chrome.extension.getURL("scenare.html");
+    var ref = this;
+    $.get(url, function (data) {
+        ref.loadPanel(data);
+    });
+};
 
-function addEvent(item){
-    var event = $("<tr></tr>");
-    $("#GUITester").find("#tb").append(event);
-    var eventType = $("<td>" + item.prop("tagName")  +  "</td>");
-    var par = item.parent();
-    var eventTarget = ("<td>" +  par.parent().prop("tagName") + " "
-            + par.prop("tagName") + " " + "button " + "</td>");
-    var targetValue = $("<td>" + "Označen obsahem " + $(item).text() +  "</td>");
-    event.append(eventType); 
-    event.append(eventTarget);
-    event.append(targetValue);
-      
-}
+ContentController.prototype.setMonitor = function () {
+    var event = new CustomEvent("init", {});
+    window.dispatchEvent(event);
+};
+
+ContentController.prototype.setListener = function () {
+    var ref = this;
+    window.addEventListener("ObjectReference", function (event) {
+        console.log(ref.pageObjects.length);
+        if (!ref.hasDetail(event.detail))
+        {
+            ref.notifyBackPage(event.detail);
+            ref.pageObjects.push(event.detail);
+        }
+    });
+};
+
+ContentController.prototype.notifyBackPage = function (object) {
+    chrome.runtime.sendMessage({detail: object});
+};
+
+ContentController.prototype.hasDetail = function(object){
+    for(var i=0; i < this.pageObjects.length;i++){
+        console.log(this.pageObjects[i] === object);
+        if (this.pageObjects[i] === object){
+            return true;
+        }
+    }
+    return false;
+};
+
+
+
+$(document).ready(function (event) {
+    var conController = new ContentController("GUITester");
+    if (conController.checkPanel()) {
+        conController.getPageBasic();
+        conController.insertPanel();
+        conController.setListener();
+        conController.setMonitor();
+        $("body").css("cursor", "crosshair");
+    }
+});
 
 
 
 
-    
+
+
+
+
 
 
 

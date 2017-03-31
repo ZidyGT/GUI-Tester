@@ -3,7 +3,7 @@
 
   "name": "GUI Tester",
   "description": "Tento doplněk testuje GUI elementy webové stránky",
-  "version": "0.1",
+  "version": "0.3",
     
   "web_accessible_resources" : ["scenare.html"],
 
@@ -16,6 +16,7 @@
     "js": ["jquery.min.js"]
     } ],
 
+
   "devtools_page": "devtools.html",
 
   "browser_action": {
@@ -24,12 +25,8 @@
   
 
   "permissions": [
-    "unlimitedStorage",
-    "storage",
     "tabs",
     "activeTab",
-    "http://*/*",
-    "https://*/*",
     "https://ajax.googleapis.com/"
   ]
 }
