@@ -125,10 +125,13 @@ Triangle.prototype.paint = function (context) {
 
 function insertCommand(msg) {
     var obj = msg.obj;
-    window.terminal.exec("var x" + count + " = new " + msg.type  + "(" +
-    obj.x + "," + obj.y  + ","  + obj.width + "," + obj.height  + ",'" +    
-    obj.fillColor + "'," + obj.lineWidth  + ",'"  + obj.lineColor
-    + "');", false);
+    var cmd = "var x" + count + " = new " + msg.type + "(" +
+            obj.x + "," + obj.y + "," + obj.width + "," + obj.height + ",'" +
+            obj.fillColor + "'," + obj.lineWidth + ",'" + obj.lineColor
+            + "');";
+    window.term.exec(cmd, false);
+    if (window.record === true)
+        addCase(cmd);
     count++;
 }
 
@@ -138,23 +141,73 @@ function initScenare() {
 
 function addCase(cmd) {
     window.scenare.push(cmd);
+    chrome.devtools.inspectedWindow.eval("console.log( " + cmd.toString() + ");");
 }
 
 function writeScenare() {
-    chrome.fileSystem.chooseEntry({type: 'saveFile'}, function(writableFileEntry) {
-    writableFileEntry.createWriter(function(writer) {
-      writer.onerror = errorHandler;
-      for(var i = 0; i < window.scenare.length; i++)
-        writer.write(new Blob([window.scenare[i]], {type: 'text/plain'}));
-    }, errorHandler);
-});
+    function onInitFs(fs) {
+
+        fs.root.getFile('log.txt', {create: true}, function (fileEntry) {
+
+            // Create a FileWriter object for our FileEntry (log.txt).
+            fileEntry.createWriter(function (fileWriter) {
+
+                fileWriter.onwriteend = function (e) {
+                    chrome.devtools.inspectedWindow.eval("console.log(Write completed);");
+                };
+
+                fileWriter.onerror = function (e) {
+                    chrome.devtools.inspectedWindow.eval("console.log(Write failed: " + e.toString() + ");");
+                };
+
+                // Create a new Blob and write it to log.txt.
+                var bb = new BlobBuilder();
+                for (var i = 0; i < window.scenare.length; i++)
+                    bb.append(window.scenare[i]);
+                fileWriter.write(bb.getBlob('text/plain'));
+
+            }, errorHandler);
+
+        }, errorHandler);
+
+    }
+    function errorHandler(e) {
+        var msg = '';
+
+        switch (e.code) {
+            case FileError.QUOTA_EXCEEDED_ERR:
+                msg = 'QUOTA_EXCEEDED_ERR';
+                break;
+            case FileError.NOT_FOUND_ERR:
+                msg = 'NOT_FOUND_ERR';
+                break;
+            case FileError.SECURITY_ERR:
+                msg = 'SECURITY_ERR';
+                break;
+            case FileError.INVALID_MODIFICATION_ERR:
+                msg = 'INVALID_MODIFICATION_ERR';
+                break;
+            case FileError.INVALID_STATE_ERR:
+                msg = 'INVALID_STATE_ERR';
+                break;
+            default:
+                msg = 'Unknown Error';
+                break;
+        }
+        ;
+        chrome.devtools.inspectedWindow.eval("console.log(Error: " + msg + ");");
+    }
+    window.requestFileSystem(window.PERSISTENT, 20 * 1024 * 1024 /*20MB*/, onInitFs, errorHandler);
 }
 
-$(document).ready(function(event){
-    $("#start").click(function(){
-        
+$(document).ready(function (event) {
+    $("#start").click(function () {
+        initScenare();
+        window.record = true;
+        chrome.devtools.inspectedWindow.eval("console.log(" + window.record.toString() + ");");
     });
-    $("#stop").click(function(){
-        
-    });   
-        });
+    $("#stop").click(function () {
+        writeScenare();
+    });
+});
+

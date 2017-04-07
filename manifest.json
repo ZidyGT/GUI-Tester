@@ -26,7 +26,7 @@
   
 
   "permissions": [
-    "fileSystem", 
+    "unlimitedStorage", 
     "tabs",
     "activeTab",
     "https://ajax.googleapis.com/"

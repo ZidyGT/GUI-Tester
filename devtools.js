@@ -6,7 +6,6 @@ chrome.devtools.panels.create("GUI Tester", "icon.png", "panel.html",
             var port = chrome.runtime.connect({name: 'devtools'});
             port.onMessage.addListener(function (msg) {
                 if (ExWindow) {
-                    ExWindow.initScenare();
                     ExWindow.insertCommand(msg);
                 } else {
                     data.push(msg);
