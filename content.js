@@ -26,6 +26,7 @@ ContentController.prototype.getPageBasic = function () {
 ContentController.prototype.loadPanel = function (html) {
     try {
         $("body").prepend(html);
+        this.setListener();
     } catch (err) {
         console.log(err.message);
     }
@@ -48,23 +49,27 @@ ContentController.prototype.setMonitor = function () {
 ContentController.prototype.setListener = function () {
     var ref = this;
     window.addEventListener("ObjectReference", function (event) {
-        console.log(ref.pageObjects.length);
-        if (!ref.hasDetail(event.detail))
+        if (!ref.hasDetail(event.detail.obj))
         {
             ref.notifyBackPage(event.detail);
-            ref.pageObjects.push(event.detail);
+            ref.pageObjects.push(event.detail.obj);
         }
     });
+    this.setMonitor();
 };
 
-ContentController.prototype.notifyBackPage = function (object) {
-    chrome.runtime.sendMessage({detail: object});
+ContentController.prototype.notifyBackPage = function (msg) {
+    chrome.runtime.sendMessage({detail: msg});
 };
 
 ContentController.prototype.hasDetail = function(object){
     for(var i=0; i < this.pageObjects.length;i++){
-        console.log(this.pageObjects[i] === object);
-        if (this.pageObjects[i] === object){
+        if (
+                (this.pageObjects[i].x === object.x)
+                &&
+                (this.pageObjects[i].y === object.y)
+                )
+        {
             return true;
         }
     }
@@ -78,9 +83,8 @@ $(document).ready(function (event) {
     if (conController.checkPanel()) {
         conController.getPageBasic();
         conController.insertPanel();
-        conController.setListener();
-        conController.setMonitor();
         $("body").css("cursor", "crosshair");
+
     }
 });
 

@@ -1,3 +1,5 @@
+var GlobalCanvas;
+
 var Point = function (x, y) {
     this.x = x;
     this.y = y;
@@ -54,7 +56,6 @@ var Rectangle = function (x, y, width, height, fillColor, lineWidth, lineColor) 
 Rectangle.prototype = Object.create(Shape.prototype);
 Rectangle.prototype.constructor = Rectangle;
 Rectangle.prototype.paint = function (context) {
-    this.clearShape(context);
     context.beginPath();
     this.setColor(context);
     context.fillRect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
@@ -72,7 +73,6 @@ var Ellipse = function (x, y, width, height, fillColor, lineWidth, lineColor) {
 Ellipse.prototype = Object.create(Shape.prototype);
 Ellipse.prototype.constructor = Ellipse;
 Ellipse.prototype.paint = function (context) {
-    this.clearShape(context);
     this.setColor(context);
     context.beginPath();
     context.arc(this.getX() + this.getWidth() / 2, this.getY() + this.getWidth() / 2, this.getWidth() / 2, 0, 2 * Math.PI);
@@ -91,7 +91,6 @@ var Triangle = function (x, y, width, height, fillColor, lineWidth, lineColor) {
 Triangle.prototype = Object.create(Shape.prototype);
 Triangle.prototype.constructor = Triangle;
 Triangle.prototype.paint = function (context) {
-    this.clearShape(context);
     this.setColor(context);
     context.beginPath();
     context.moveTo(this.getX() + this.getWidth() / 2, this.getY());
@@ -137,7 +136,7 @@ var Canvas = function (id) {
     this.point;
 };
 
-Canvas.prototype.setPoint = function(){
+Canvas.prototype.setPoint = function () {
     var AbsCoor = this.canvas.getBoundingClientRect();
     this.point = new Point(parseInt(AbsCoor.left), parseInt(AbsCoor.top));
 };
@@ -182,7 +181,8 @@ Canvas.prototype.add = function (object) {
     {
         this.objects.push(object);
     }
-    this.controler.change(this.objects);
+    if (this.controler)
+        this.controler.change(this.objects);
 };
 
 Canvas.prototype.hasObject = function (object) {
@@ -212,16 +212,20 @@ Canvas.prototype.change = function (object) {
     }
 };
 
+Canvas.prototype.clear = function (context) {
+    context.clearRect(0, 0, this.width, this.height);
+};
 
 Canvas.prototype.repaint = function () {
+    this.clear(this.context);
     for (i = 0; i < this.objects.length; i++) {
         this.objects[i].paint(this.context);
     }
 };
 
 Canvas.prototype.getCoordinates = function (evt) {
-    var coor = new Point(parseInt(evt.clientX ) - this.point.getX(),
-            parseInt(evt.clientY ) - this.point.getY());
+    var coor = new Point(parseInt(evt.clientX) - this.point.getX(),
+            parseInt(evt.clientY) - this.point.getY());
     return coor;
 };
 
@@ -230,27 +234,20 @@ var MouseControler = function (canvas)
     this.paint = canvas;
 };
 
-MouseControler.prototype.monitor = function () {
-    var paint = this.paint;
-    var ref = this;
-    paint.setPoint();
-    window.addEventListener("init", function () {
-        ref.listener(paint);
-    });
-};
+
 
 
 MouseControler.prototype.listener = function (paint) {
     var ref = this;
     $(paint.canvas).mouseover(function () {
-        $(this).mousemove(function (event) {
+        $(this).click(function (event) {
             for (var i = 0; i < paint.objects.length; i++) {
                 ref.checkOnShape(paint.objects[i], event);
             }
         });
     });
     $(paint.canvas).mouseout(function () {
-        $(this).unbind("mousemove");
+        $(this).unbind("click");
     });
 };
 
@@ -262,15 +259,19 @@ MouseControler.prototype.checkOnShape = function (object, event) {
             &&
             (coor.getY() >= object.getY() && coor.getY() <= (object.getY() + object.getHeight()))
             ) {
-        $("body").css("cursor", "pointer");
         ref.sendReference(object);
-    } else {
-        $("body").css("cursor", "crosshair");
     }
 };
 
 MouseControler.prototype.sendReference = function (object) {
-    var event = new CustomEvent("ObjectReference", {detail: object});
+    var TypeOf;
+    if(object instanceof Rectangle)
+        TypeOf = "Rectangle";
+    else if(object instanceof Ellipse)
+        TypeOf = "Ellipse";
+    else if(object instanceof Triangle)
+        TypeOf = "Triangle";
+    var event = new CustomEvent("ObjectReference", {detail: {obj: object,type:TypeOf }});
     window.dispatchEvent(event);
 };
 
@@ -280,11 +281,18 @@ MouseControler.prototype.change = function (objects) {
 
 
 
+
 $(document).ready(function (event) {
     var canvas = new Canvas("Canvas");
-    canvas.controler = new MouseControler(canvas);
-    canvas.controler.monitor();
+    GlobalCanvas = canvas;
     var panel = $(".panel .row .btn-group-sm");
+    window.addEventListener("init", function () {
+        canvas.setPoint();
+        canvas.controler = new MouseControler(canvas);
+        canvas.controler.listener(canvas);
+    });
+    // select the target node
+    
     panel.eq(0).children("button").each(function (index) {
         $(this).click(function () {
             var object;
@@ -369,7 +377,6 @@ $(document).ready(function (event) {
     });
 
 });
-
 
 
 

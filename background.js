@@ -21,9 +21,9 @@ BackPgController.prototype.messageListener = function () {
     });
 };
 
-BackPgController.prototype.notifyDevtools = function (msg) {    
+BackPgController.prototype.notifyDevtools = function (msg) {   
     this.ports.forEach(function (port) {
-        port.postMessage({detail: msg});
+        port.postMessage(msg);      
     });
 };
 
@@ -33,7 +33,7 @@ BackPgController.prototype.devTlListener = function () {
         if (port.name !== "devtools")
             return;
         ref.pushPort(port);
-        console.log("connected" + " " + port.name);
+        ref.removeConnection(port);
         port.onMessage.addListener(function (msg) {
             // Received message from devtools. Do something:
             console.log('Received message from devtools page' + msg);
@@ -46,10 +46,11 @@ BackPgController.prototype.pushPort = function (port) {
 };
 
 BackPgController.prototype.removeConnection = function (port) {
+    var ref = this;
     port.onDisconnect.addListener(function () {
-        var i = indexOfPort(port);
+        var i = ref.indexOfPort(port);
         if (i !== -1)
-            splicePort(i);
+            ref.splicePort(i);
     });
 };
 

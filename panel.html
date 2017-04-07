@@ -1,9 +1,5 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
+
 <html>
     <head>
         <meta charset="UTF-8">
@@ -11,19 +7,24 @@ and open the template in the editor.
         <!-- CSS -->
         <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link href="bootstrap/css/bootstrap-grid.min.css" rel="stylesheet">
-        <link href="bootstrap/css/homepage-reboot.css" rel="stylesheet">
+        <link href="jquery.terminal.min.css" rel="stylesheet">
         <!-- Javascript -->
-        <script src="jquery.min.js"></script>
-        <script src="bootstrap/js/bootstrap.min.js"></script>
+        <script>
+            var terminal,scenare;
+        </script>
+        <script src="bootstrap/js/bootstrap.min.js"></script> 
+        <script src="jquery.terminal.min.js"></script>
+        <script src="terminal.js"></script>
         <script src="panel.js"></script>
     </head>
     <body>
-        <div id="console">
-            <h4>Objects</h4>
-            <table class ="table" id="object">
-    <tbody>
-    </tbody>
-</table>
-        </div>
+        <button id="start" type="button" class="btn btn-default btn-sm">
+          <span class="glyphicon glyphicon-play"></span> Start Record
+        </button>
+         <button id ="stop" type="button" class="btn btn-default btn-sm">
+          <span class="glyphicon glyphicon-stop"></span> Stop Record
+        </button>
+        <div id="console" class="terminal" style="height: 200px;">
+            </div>
     </body>
 </html>
