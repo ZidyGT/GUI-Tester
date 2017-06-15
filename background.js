@@ -1,73 +1,105 @@
+var id = "[BACKGROUND PAGE] ";
+
 var BackPgController = function () {
     this.ports = new Array();
 };
 
 BackPgController.prototype.execCon = function () {
-    var ref = this;
     chrome.browserAction.onClicked.addListener(function () {
-        ref.exec();
-    });
+        this.exec();
+    }.bind(this));
 };
 
 BackPgController.prototype.exec = function () {
     chrome.tabs.executeScript(null, {file: 'content.js'});
 };
 
-BackPgController.prototype.messageListener = function () {
-    var ref = this;
-    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-        ref.notifyDevtools(request.detail);
+BackPgController.prototype.messageListener = function (request, sender, sendResponse) {
+        console.log(id + "receive " + JSON.stringify(request.detail));
+        this.notifyDevtools(request.detail);
         return true;
-    });
 };
 
-BackPgController.prototype.notifyDevtools = function (msg) {   
-    this.ports.forEach(function (port) {
-        port.postMessage(msg);      
-    });
+BackPgController.prototype.notifyDevtools = function (msg) { 
+        for(var i = 0; i < this.ports.length; i++)
+        {
+            this.ports[i].postMessage(msg); 
+            console.log(id + "sending " + JSON.stringify(msg)+ " na port " + this.ports[i].name);
+        }
 };
+
 
 BackPgController.prototype.devTlListener = function () {
-    var ref = this;
     chrome.runtime.onConnect.addListener(function (port) {
-        if (port.name !== "devtools")
+        var patt = /devtools-gui/;
+        if (!patt.test(port.name))
             return;
-        ref.pushPort(port);
-        ref.removeConnection(port);
-        port.onMessage.addListener(function (msg) {
-            // Received message from devtools. Do something:
-            console.log('Received message from devtools page' + msg);
-        });
-    });
+        else
+        {
+            console.log(id + "connected to " + port.name);
+            this.pushPort(port);
+            if(!chrome.runtime.onMessage.hasListener(this.messageListener.bind(this)))
+            {
+                chrome.runtime.onMessage.addListener(this.messageListener.bind(this));             
+            }
+            console.log(chrome.runtime.onMessage.hasListener(this.messageListener.bind(this)));
+            console.log(this.ports);
+            this.removeConnection(port);  
+        }
+    }.bind(this));
 };
 
 BackPgController.prototype.pushPort = function (port) {
+    if(!this.hasPort(port))
     this.ports.push(port);
 };
 
 BackPgController.prototype.removeConnection = function (port) {
-    var ref = this;
     port.onDisconnect.addListener(function () {
-        var i = ref.indexOfPort(port);
-        if (i !== -1)
-            ref.splicePort(i);
-    });
+        if(chrome.runtime.onMessage.hasListener(this.messageListener.bind(this))){
+            chrome.runtime.onMessage.removeListener(this.messageListener.bind(this));        
+        }
+        console.log(chrome.runtime.onMessage.hasListener(this.messageListener.bind(this)));
+        console.log(id + "dissconnected to " + port.name);
+        this.remove(port);
+        console.log(this.ports);
+    }.bind(this));
+};
+
+BackPgController.prototype.hasPort= function (port) {   
+    for(var i=0; i < this.ports.length; i++)
+    {
+        if(this.ports[i].name === port.name)
+            return true;
+    }
+    return false;
+};
+
+BackPgController.prototype.indexPort= function (port) {   
+    for(var i=0; i < this.ports.length; i++)
+    {
+        if(this.ports[i].name === port.name)
+            return i;
+    }
+    return -1;
 };
 
 BackPgController.prototype.splicePort = function (index) {
     this.ports.splice(index, 1);
 };
 
-BackPgController.prototype.indexOfPort = function (port) {
-    for (var i = 0; this.ports.length; i++)
-        if (this.ports[i] === port)
-            return i;
+BackPgController.prototype.remove = function (port) {
+    var i  = this.indexPort(port);
+    if(i !== -1)
+        this.splicePort(i);
 };
+
 
 var controler = new BackPgController();
 controler.execCon();
-controler.messageListener();
 controler.devTlListener();
+
+
 
 
 

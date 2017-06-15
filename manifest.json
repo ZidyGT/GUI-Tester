@@ -4,13 +4,13 @@
   "name": "GUI Tester",
   "description": "Tento doplněk testuje GUI elementy webové stránky",
   "version": "0.3",
-    
-  "web_accessible_resources" : ["scenare.html"],
 
   "background": {
     "scripts": ["background.js"],
     "persistent": false
   },
+  
+ 
   
   "content_scripts": [ {
     "matches": ["http://*/*","https://*/*"],
@@ -26,6 +26,7 @@
   
 
   "permissions": [
+    "storage",
     "unlimitedStorage", 
     "tabs",
     "activeTab",

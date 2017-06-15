@@ -1,44 +1,94 @@
-var ContentController = function (panel) {
-    this.panel = panel;
+var id = "[CONTENT SCRIPT] ";
+
+var Point = function (x, y) {
+    this.x = x;
+    this.y = y;
+};
+
+var Shape = function (x, y, width, height, fillColor, lineWidth, lineColor) {
+    Point.call(this, x, y);
+    this.point = new Point(x, y);
+    this.width = width;
+    this.height = height;
+    this.fillColor = fillColor;
+    this.lineWidth = lineWidth;
+    this.lineColor = lineColor;
+};
+
+Shape.prototype = Object.create(Point.prototype);
+Shape.prototype.constructor = Shape;
+Shape.prototype.getWidth = function () {
+    return this.width;
+};
+
+Shape.prototype.equal = function(object){
+    var keys = Object.keys(object);
+    for (var i = 0; i < keys.length ; i++)
+    {
+        if(object[keys[i]] instanceof Object){
+            if(!this.equal(object[keys[i]])){           
+                return false;
+            }
+        }
+        else{
+        if(object[keys[i]] !== this[keys[i]])
+                return false;
+        }
+    }
+    return true;
+};
+
+
+var Rectangle = function (x, y, width, height, fillColor, lineWidth, lineColor) {
+    Shape.call(this, x, y, width, height, fillColor, lineWidth, lineColor);
+};
+
+Rectangle.prototype = Object.create(Shape.prototype);
+Rectangle.prototype.constructor = Rectangle;
+
+
+var Ellipse = function (x, y, width, height, fillColor, lineWidth, lineColor) {
+    Shape.call(this, x, y, width, height, fillColor, lineWidth, lineColor);
+};
+
+Ellipse.prototype = Object.create(Shape.prototype);
+Ellipse.prototype.constructor = Ellipse;
+
+
+var Triangle = function (x, y, width, height, fillColor, lineWidth, lineColor) {
+    Shape.call(this, x, y, width, height, fillColor, lineWidth, lineColor);
+};
+
+Triangle.prototype = Object.create(Shape.prototype);
+Triangle.prototype.constructor = Triangle;
+
+
+var ContentController = function () {
     this.title;
     this.pagetTitle;
     this.port;
     this.pageObjects = new Array();
+    this.setListener();
 };
 
-ContentController.prototype.checkPanel = function () {
-    var check = $("body").find("#" + this.panel).length;
-    if (check === 0)
-        return true;
-    else
-        return false;
-};
 
 ContentController.prototype.getPageBasic = function () {
     var dom = $(":root");
     this.title = $(dom).find("title").text();
     this.pageTitle = $(dom).find("h1").first().text();
-    console.log("Vítejte GUI Tester");
-    console.log("Stránka s titulkem " + this.title);
-    console.log("Stránka s nadpisem " + this.pageTitle);
+    console.log(id + "Vítejte GUI Tester");
+    console.log(id + "Stránka s titulkem " + this.title);
+    console.log(id + "Stránka s nadpisem " + this.pageTitle);
 };
 
-ContentController.prototype.loadPanel = function (html) {
-    try {
-        $("body").prepend(html);
-        this.setListener();
-    } catch (err) {
-        console.log(err.message);
-    }
-};
-
-ContentController.prototype.insertPanel = function ()
-{
-    var url = chrome.extension.getURL("scenare.html");
-    var ref = this;
-    $.get(url, function (data) {
-        ref.loadPanel(data);
-    });
+ContentController.prototype.showDevtools = function(){
+    var event = new KeyboardEvent("keydown");
+    event.ctrlKey = true;
+    event.shiftKey = true;
+    event.keyCode = 105;
+    event.which = 105;
+    window.dispatchEvent(event);
+    console.log(event);
 };
 
 ContentController.prototype.setMonitor = function () {
@@ -47,16 +97,33 @@ ContentController.prototype.setMonitor = function () {
 };
 
 ContentController.prototype.setListener = function () {
-    var ref = this;
     window.addEventListener("ObjectReference", function (event) {
-        if (!ref.hasDetail(event.detail.obj))
-        {
-            ref.notifyBackPage(event.detail);
-            ref.pageObjects.push(event.detail.obj);
-        }
+            var shape;
+            var EvtShape = event.detail.obj; 
+            shape = eval("new "  + event.detail.type  + "(" + 
+                    EvtShape.x + "," + 
+                    EvtShape.y + "," + 
+                    EvtShape.width + "," + 
+                    EvtShape.height + ",'" +
+                    EvtShape.fillColor + "'," +
+                    EvtShape.lineWidth + ",'" +
+                    EvtShape.lineColor + "');");
+            
+            if(!this.hasDetail(shape))
+            {
+                console.log(id + JSON.stringify(shape));
+                this.notifyBackPage(event.detail);
+                this.pageObjects.push(shape);
+            }
+    }.bind(this));
+    window.addEventListener("CanvasReference", function listener(event) {
+        console.log(id + "canvas sended");
+        chrome.runtime.sendMessage({detail: event.detail});
+        window.removeEventListener("CanvasReference", listener);
     });
-    this.setMonitor();
+    this.setMonitor();  
 };
+
 
 ContentController.prototype.notifyBackPage = function (msg) {
     chrome.runtime.sendMessage({detail: msg});
@@ -64,29 +131,29 @@ ContentController.prototype.notifyBackPage = function (msg) {
 
 ContentController.prototype.hasDetail = function(object){
     for(var i=0; i < this.pageObjects.length;i++){
-        if (
-                (this.pageObjects[i].x === object.x)
-                &&
-                (this.pageObjects[i].y === object.y)
-                )
+        if (this.pageObjects[i].equal(object) && object instanceof this.pageObjects[i].constructor)   
         {
             return true;
+        }
+        else{         
         }
     }
     return false;
 };
 
 
-
 $(document).ready(function (event) {
-    var conController = new ContentController("GUITester");
-    if (conController.checkPanel()) {
+    var conController = new ContentController();
         conController.getPageBasic();
-        conController.insertPanel();
         $("body").css("cursor", "crosshair");
-
-    }
+        conController.showDevtools();
 });
+
+
+
+
+
+
 
 
 

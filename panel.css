@@ -1,0 +1,19 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Apr 24, 2017, 9:58:34 PM
+    Author     : zidy
+*/
+
+#log{
+    font-family : "Courier New";
+    font-size: small;
+}
+
+.row{
+  max-height: 75px;  
+} 
+
