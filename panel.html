@@ -8,46 +8,81 @@
         <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link href="jquery.terminal.min.css" rel="stylesheet">
         <link href="panel.css" rel="stylesheet">
+        <link href="icons/style.css" rel="stylesheet">
         <!-- Javascript -->
-         <script src="jquery.min.js"></script>
+        <script src="jquery.min.js"></script>
         <script src="bootstrap/js/bootstrap.min.js"></script> 
         <script src="jquery.terminal.min.js"></script>
         <script src="panel.js"></script>
     </head>
     <body>
-        <button id="start" type="button" class="btn btn-default btn-sm">
-          <span class="glyphicon glyphicon-play"></span> Start Record
-        </button>
-         <button id ="stop" type="button" class="btn btn-default btn-sm">
-          <span class="glyphicon glyphicon-stop"></span> Stop Record
-        </button>
-         <button id ="save" type="button" class="btn btn-default btn-sm">
-          <span class="glyphicon glyphicon-floppy-disk"></span> Save Record
-        </button>
-        <div id="console" class="terminal" style="height: 75px;">
+        <div class="toolbar-shadow">
+            <div class="btn-group" role="group">
+                <button class="btn toolbar-button" id="offset" title="Offset">
+                    <span class="icon-icon_terc">
+                        <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+                    </span>
+                </button>
+                <div class="item-divider"></div>
+                <button class="btn toolbar-button" id="vyber" title="Selection">
+                    <span class="icon-icon_vyber">             
+                    </span>
+                </button>
+                <div class="item-divider"></div>
+                <button class="btn toolbar-button" id="reference" title="Scenario Selection">
+                    <span class="icon-icon_vyber_2">
+                        <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+                    </span>
+                </button>
+                <div class="item-divider"></div>
+                <button class="btn toolbar-button" id="copy" title="Scenarion Deep Copy Selection">
+                    <span class="icon-icon_vyber_copy">
+                        <span class="path1"></span><span class="path2"></span>
+                    </span>
+                </button>
             </div>
-        <div>     
-        <button id="startTests" type="button" class="btn">
-          <span class="glyphicon glyphicon-play"></span> Start Record
-        </button>
-            </div>
+        </div>
         <div class="row col-md-12">
-            <div class="col-md-6">
-  <table class="table">
-    <thead>
-      <tr>
-        <th colspan="3">Testovací scénáře</th>
-      </tr>
-    </thead>
-    <tbody id="table">
-    </tbody>
-  </table>
+
+            <div class="col-md-3 left-sidebar">
+                <div class ="left-toolbar">
+                    <button id="start" type="button" class="btn  btn-sm">
+                        <span class="glyphicon glyphicon-play"></span>
+                    </button>
+                    <button id ="stop" type="button" class="btn btn-sm">
+                        <span class="glyphicon glyphicon-stop"></span>
+                    </button>
                 </div>
-            <div class="col-md-6">
-                <strong>Log</strong>
-        <blockquote class="blockquote" id="log">
-        </blockquote>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th colspan="3">Testovací scénáře</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table">
+                    </tbody>
+                </table>
             </div>
-</div>
+            <div class="col-md-5 context">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item" id="nav-edit"><a href="#">Edit</a></li>
+                    <li class="nav-item" id="nav-summary"><a href="#">Summary</a></li>
+                    <li class="nav-item" id="nav-description"><a href="#">Description</a></li>
+                </ul>
+                <div id="content">
+                    <div id="description">
+                        <textarea class="form-control" rows="5" id="comment"></textarea>
+                    </div>
+                    <div id="console" class="terminal" style="height: 75px;">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 right-sidebar">
+                <strong>Log</strong>
+                <blockquote class="blockquote" id="log">
+                </blockquote>
+            </div>
+        </div>
+
     </body>
 </html>

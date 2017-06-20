@@ -19,10 +19,8 @@
 
 
   "devtools_page": "devtools.html",
-
-  "browser_action": {
-    "default_icon":  "icon.png"
-  },
+    
+   "web_accessible_resources" : ["extension-script.js"],
   
 
   "permissions": [
@@ -30,6 +28,8 @@
     "unlimitedStorage", 
     "tabs",
     "activeTab",
-    "https://ajax.googleapis.com/"
+    "https://ajax.googleapis.com/",
+    "http://*/",
+    "https://*/"
   ]
 }
