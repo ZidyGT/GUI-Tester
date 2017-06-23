@@ -2,6 +2,7 @@ var id = "[BACKGROUND PAGE] ";
 
 var BackPgController = function () {
     this.ports = new Array();
+    this.init = false;
 };
 
 BackPgController.prototype.exec = function () {
@@ -26,9 +27,10 @@ BackPgController.prototype.notifyDevtools = function (msg) {
 BackPgController.prototype.devTlListener = function () {
     chrome.runtime.onConnect.addListener(function (port) {
         port.onMessage.addListener(function (msg) {
-            if (msg.detail === "init")
+            if (msg.detail === "init" && this.init === false)
             {
                 console.log("init recceive");
+                this.init = true;
                 this.exec();
             }
         }.bind(this));
@@ -40,7 +42,6 @@ BackPgController.prototype.devTlListener = function () {
             console.log(id + "connected to " + port.name);
             this.pushPort(port);
             chrome.runtime.onMessage.addListener(this.messageListener.bind(this));
-            console.log(chrome.runtime.onMessage.hasListener(this.messageListener.bind(this)));
             console.log(this.ports);
             this.removeConnection(port);
         }
@@ -55,7 +56,6 @@ BackPgController.prototype.pushPort = function (port) {
 BackPgController.prototype.removeConnection = function (port) {
     port.onDisconnect.addListener(function () {
         chrome.runtime.onMessage.removeListener(this.messageListener.bind(this));
-        console.log(chrome.runtime.onMessage.hasListener(this.messageListener.bind(this)));
         console.log(id + "dissconnected to " + port.name);
         this.remove(port);
         console.log(this.ports);

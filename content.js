@@ -31,17 +31,11 @@ ContentController.prototype.showDevtools = function () {
 
 
 ContentController.prototype.setListener = function () {
-    window.addEventListener("ObjectReference", function (event) {
+    window.addEventListener("Interaction", function (event) {
         chrome.runtime.sendMessage({detail: event.detail});
-        console.log(id + "object sended");
+        console.log(id + event.detail + "sended");
     }.bind(this));
-    window.addEventListener("CanvasReference", function (event) {
-        console.log(id + "canvas sended");
-        chrome.runtime.sendMessage({detail: event.detail});
-    });
 };
-
-
 
 ContentController.prototype.injectScript = function (file, node) {
     var th = document.getElementsByTagName(node)[0];

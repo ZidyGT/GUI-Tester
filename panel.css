@@ -79,7 +79,11 @@ body {
 }
 
 .left-toolbar{
-    
+}
+
+.left-sidebar{
+    padding-left:15px;
+    padding-top:15px;
 }
 
 .toolbar-shadow {
@@ -100,6 +104,24 @@ body {
 
 div {
     display: block;
+}
+
+#comment{
+    resize:vertical;
+}
+
+#content{
+    margin-top:5px;
+}
+
+#actual-error{
+    color:red;
+}
+
+
+#testSheet{
+    margin-top:10px;
+    margin-left:20px;
 }
 
 

@@ -13,6 +13,10 @@
         <script src="jquery.min.js"></script>
         <script src="bootstrap/js/bootstrap.min.js"></script> 
         <script src="jquery.terminal.min.js"></script>
+        <script src="model.js"></script>
+        <script src="view.js"></script>
+        <script src="controller.js"></script>
+
         <script src="panel.js"></script>
     </head>
     <body>
@@ -45,42 +49,55 @@
         <div class="row col-md-12">
 
             <div class="col-md-3 left-sidebar">
+                <strong>Manager testů</strong>
                 <div class ="left-toolbar">
-                    <button id="start" type="button" class="btn  btn-sm">
-                        <span class="glyphicon glyphicon-play"></span>
-                    </button>
-                    <button id ="stop" type="button" class="btn btn-sm">
-                        <span class="glyphicon glyphicon-stop"></span>
-                    </button>
+                    <div class="btn-group" role="group">
+                        <button id="start" type="button" class="btn btn-sm left-toolbar-button" title="Play test">
+                            <span class="glyphicon glyphicon-play"></span>
+                        </button>
+                        <button id ="stop" type="button" class="btn btn-sm left-toolbar-button" title="Stop test">
+                            <span class="glyphicon glyphicon-stop"></span>                      
+                        </button>
+                        <button id ="createG" type="button" class="btn btn-sm left-toolbar-button" title="Create test group">
+                            <span class="glyphicon glyphicon-plus"></span>                       
+                        </button>
+                        <button id ="createS" type="button" class="btn btn-sm left-toolbar-button" title="Create test">
+                            <span class="glyphicon glyphicon-plus-sign"></span>
+
+                        </button>
+                    </div>                   
                 </div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th colspan="3">Testovací scénáře</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table">
-                    </tbody>
-                </table>
+                <div id="testSheet"></div>
+                <div id="testViewSheet"></div>
             </div>
             <div class="col-md-5 context">
                 <ul class="nav nav-tabs">
-                    <li class="nav-item" id="nav-edit"><a href="#">Edit</a></li>
+                    <li class="nav-item" id="nav-console"><a href="#">Edit</a></li>
                     <li class="nav-item" id="nav-summary"><a href="#">Summary</a></li>
                     <li class="nav-item" id="nav-description"><a href="#">Description</a></li>
                 </ul>
                 <div id="content">
                     <div id="description">
                         <textarea class="form-control" rows="5" id="comment"></textarea>
+                        <button id="description-save">Save</button>
+                    </div>
+                    <div id ="summary">
+                        <table class="table">
+                            <thead class="thead-inverse">
+                                <tr>
+                                    <th>Line Number</th>
+                                    <th>Command</th>
+                                </tr>
+                            </thead>
+                            <tbody id ="summary-table"></tbody>
+                        </table>
                     </div>
                     <div id="console" class="terminal" style="height: 75px;">
                     </div>
                 </div>
             </div>
             <div class="col-md-3 right-sidebar">
-                <strong>Log</strong>
-                <blockquote class="blockquote" id="log">
-                </blockquote>
+                <strong>Průběh testů</strong>
             </div>
         </div>
 

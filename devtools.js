@@ -5,6 +5,7 @@ var DevtoolsController = function (name, icon, panel) {
     this.port;
     this.connection;
     this.ExPanel;
+    this.hasListener = false;
     if (!(chrome.devtools.inspectedWindow.tabId === null))//pro pot�ebu testov�n�
         chrome.devtools.panels.create(name, icon, panel, this.Init.bind(this));
 };
@@ -15,6 +16,7 @@ DevtoolsController.prototype.Init = function (ExtensionPanel) {
     this.port = "devtools-gui " + chrome.devtools.inspectedWindow.tabId.toString();
     this.connection = chrome.runtime.connect({name: this.port});
     ExtensionPanel.onShown.addListener(this.Viewing.bind(this));
+    ExtensionPanel.onHidden.removeListener(this.Viewing.bind(this));
 };
 
 
@@ -23,18 +25,23 @@ DevtoolsController.prototype.Viewing = function (panelWindow) {
     this.connection.postMessage({detail: "init"});
     chrome.devtools.inspectedWindow.eval(id + "console.log('devtool showed');");
     this.ExWindow = panelWindow;
-    if(this.ExWindow)
-    this.connection.onMessage.addListener(function (msg) {
-            chrome.devtools.inspectedWindow.eval(id + "console.log('object received');");
+    if(this.ExWindow && this.hasListener === false){
+                this.connection.onMessage.addListener(this.messageListener.bind(this));
+                this.hasListener = true;
+    }
+};
+
+DevtoolsController.prototype.messageListener = function (msg) {
+         chrome.devtools.inspectedWindow.eval(id + "console.log('object received');");
         if (msg.detail === "canvas")
         {
-            this.ExWindow.panel.insertCommandCanvas();
+            this.ExWindow.controller.insertCommandCanvas();
         } else if (msg.detail === "object") {
-            this.ExWindow.panel.insertCommandObject();
-        }
-    }.bind(this));
-    this.ExPanel.onShown.removeListener(this.Viewing.bind(this));
-};
+            this.ExWindow.controller.insertCommandObject();
+        } else if (msg.detail === "offset") {
+            this.ExWindow.controller.insertCommandOffset();
+        }    
+    };
 
 var Devcontrol = new DevtoolsController("GUI Tester", "icon.png", "panel.html");
 

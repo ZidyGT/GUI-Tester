@@ -4,40 +4,39 @@
  * and open the template in the editor.
  */
 
-var ObjectOz;
+var ObjectOfGlobal;
+var MouseOffset;
 var Global = window.InitGlobal();
 var GlobalID = window.InitGlobalID();
-var event = new CustomEvent("CanvasReference", {detail: "canvas"});
+var event = new CustomEvent("Interaction", {detail: "canvas"});
 window.dispatchEvent(event);
+var bounding = document.getElementById(GlobalID).getBoundingClientRect();
 
 
 
 var mouseListenerObject = function (event){
         var x = event.clientX;
         var y = event.clientY;
-        ObjectOz = Global.getObjectAtOffset(x, y);
-        var event = new CustomEvent("ObjectReference", {detail: "object"});
+        ObjectOfGlobal = Global.getObjectAtOffset(x - bounding.x, y - bounding.y);
+        var event = new CustomEvent("Interaction", {detail: "object"});
+        window.dispatchEvent(event);
+    };
+    
+var mouseListenerOffsetOnMouseClick = function (event){
+        var x = event.clientX;
+        var y = event.clientY;
+        MouseOffset = {x:x - bounding.x, y:y - bounding.y};
+        var event = new CustomEvent("Interaction", {detail: "offset"});
         window.dispatchEvent(event);
     };
 
-var mouseListenerCopy = function (event){
-        var x = event.clientX;
-        var y = event.clientY;
-        ObjectOz = JSON.parse(JSON.stringify(ObjectOz));
-    };
-    
+function OffsetOnMouseClick(){
+    $("#"+GlobalID).click(mouseListenerOffsetOnMouseClick);
+}   
 
-function getObjectID(object){
-    return object;
-}
-
-function selectObjectByID(object){
-    ;
-}
-
-function selectObjectAtOffset(object){
-    
-}
+function unsetOffsetOnMouseClick(){
+    $("#"+GlobalID).unbind("click",mouseListenerOffsetOnMouseClick);
+}   
 
 function setListenerGetObject(){
     $("#"+GlobalID).click(mouseListenerObject);
@@ -47,17 +46,10 @@ function unsetListenerGetObject(){
     $("#"+GlobalID).unbind("click", mouseListenerObject);
 }
 
-function setListenerGetCopy(){
-    $("#"+GlobalID).click(mouseListenerCopy);
-}
-
-function unsetListenerGetCopy(){
-    $("#"+GlobalID).unbind("click", mouseListenerCopy);
-}
-
 function clearListeners(){
    unsetListenerGetObject();
    unsetListenerGetCopy();
+   unsetOffsetOnMouseClick();
 }
 function assert(condition, message){
     if(!condition){
