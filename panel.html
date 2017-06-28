@@ -49,14 +49,15 @@
         <div class="row col-md-12">
 
             <div class="col-md-3 left-sidebar">
-                <strong>Manager testů</strong>
-                <div class ="left-toolbar">
+                 
+                <div class=" row col-md-12">
+                         
+                    <div class ="col-md-4">
+                        <strong>Manager testů</strong>
+                                      <div class ="left-toolbar">
                     <div class="btn-group" role="group">
-                        <button id="start" type="button" class="btn btn-sm left-toolbar-button" title="Play test">
+                        <button id="play" type="button" class="btn btn-sm left-toolbar-button" title="Play test">
                             <span class="glyphicon glyphicon-play"></span>
-                        </button>
-                        <button id ="stop" type="button" class="btn btn-sm left-toolbar-button" title="Stop test">
-                            <span class="glyphicon glyphicon-stop"></span>                      
                         </button>
                         <button id ="createG" type="button" class="btn btn-sm left-toolbar-button" title="Create test group">
                             <span class="glyphicon glyphicon-plus"></span>                       
@@ -67,10 +68,17 @@
                         </button>
                     </div>                   
                 </div>
-                <div id="testSheet"></div>
-                <div id="testViewSheet"></div>
+                    </div>
+                    <div class ="col-md-8">
+                         <div id="testSheet"></div>
+                    </div>
+                </div>
+                 <div class=" row col-md-12"><div id="testViewSheet"></div></div>
+  
+               
+   
             </div>
-            <div class="col-md-5 context">
+            <div class="col-md-6 context">
                 <ul class="nav nav-tabs">
                     <li class="nav-item" id="nav-console"><a href="#">Edit</a></li>
                     <li class="nav-item" id="nav-summary"><a href="#">Summary</a></li>
@@ -78,8 +86,6 @@
                 </ul>
                 <div id="content">
                     <div id="description">
-                        <textarea class="form-control" rows="5" id="comment"></textarea>
-                        <button id="description-save">Save</button>
                     </div>
                     <div id ="summary">
                         <table class="table">
@@ -92,7 +98,12 @@
                             <tbody id ="summary-table"></tbody>
                         </table>
                     </div>
-                    <div id="console" class="terminal" style="height: 75px;">
+                    <div class=" row col-md-12" id="console">
+                        <div class="col-md-6 cons-edit"><h4 class="edit-h">Editing console</h4><div id="edit-console" class="terminal" style="height: 75px;"></div></div>
+                                    <div class="col-md-6 cons-record"><h4 class ="rec-h">Recording console 
+                                            <span class="glyphicon glyphicon-record">
+                            
+                                </span></h4><div id="rec-console" class="terminal" style="height: 75px;"></div></div>        
                     </div>
                 </div>
             </div>

@@ -4,7 +4,7 @@ var view;
 
 $(document).ready(function (event) {
     view = new window.View(model);
-    controller = new window.Controller(model, view, "console");
+    controller = new window.Controller(model, view, "edit-console", "rec-console");
 });
 
 

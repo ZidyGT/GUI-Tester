@@ -4,58 +4,58 @@
  * and open the template in the editor.
  */
 
-var ObjectOfGlobal;
-var MouseOffset;
-var Global = window.InitGlobal();
-var GlobalID = window.InitGlobalID();
+var ObjectOfCanvas;
+var MainCanvas = window.getMainCanvasObject();
 var event = new CustomEvent("Interaction", {detail: "canvas"});
 window.dispatchEvent(event);
-var bounding = document.getElementById(GlobalID).getBoundingClientRect();
 
+var GuiTester = function () {
+    this.MainCanvasID = window.getMainCanvasObjectID();
+    this.MouseOffset;
+    var clientRect = document.getElementById(this.MainCanvasID).getBoundingClientRect();
+    this.bounding = {x:clientRect.left, y:clientRect.top};
 
-
-var mouseListenerObject = function (event){
-        var x = event.clientX;
-        var y = event.clientY;
-        ObjectOfGlobal = Global.getObjectAtOffset(x - bounding.x, y - bounding.y);
+    this.mouseListenerObject = function (click) {
+        var x = click.clientX;
+        var y = click.clientY;
+        ObjectOfCanvas = MainCanvas.getObjectAtOffset(x - this.bounding.x, y - this.bounding.y);
         var event = new CustomEvent("Interaction", {detail: "object"});
         window.dispatchEvent(event);
-    };
-    
-var mouseListenerOffsetOnMouseClick = function (event){
-        var x = event.clientX;
-        var y = event.clientY;
-        MouseOffset = {x:x - bounding.x, y:y - bounding.y};
+    }.bind(this);
+
+    this.mouseListenerOffset = function (click) {
+        var x = click.clientX;
+        var y = click.clientY;
+        this.MouseOffset = {x: x - this.bounding.x, y: y - this.bounding.y};
         var event = new CustomEvent("Interaction", {detail: "offset"});
         window.dispatchEvent(event);
+    }.bind(this);
+
+    this.OffsetOnMouseClick = function () {
+        $("#" + this.MainCanvasID).on("click",this.mouseListenerOffset);
     };
 
-function OffsetOnMouseClick(){
-    $("#"+GlobalID).click(mouseListenerOffsetOnMouseClick);
-}   
+    this.setListenerGetObject = function () {
+        $("#" + this.MainCanvasID).on("click",this.mouseListenerObject);
+    };
 
-function unsetOffsetOnMouseClick(){
-    $("#"+GlobalID).unbind("click",mouseListenerOffsetOnMouseClick);
-}   
 
-function setListenerGetObject(){
-    $("#"+GlobalID).click(mouseListenerObject);
-}
+    this.clearListeners = function () {
+        $("#" + this.MainCanvasID).off("click",this.mouseListenerOffsetOnMouseClick);
+        $("#" + this.MainCanvasID).off("click",this.mouseListenerObject);
+    };
+    this.assert = function assert(condition, message) {
+        if (!condition) {
+            throw message;
+        }
+    };
+};
 
-function unsetListenerGetObject(){
-    $("#"+GlobalID).unbind("click", mouseListenerObject);
-}
+var guitest = new GuiTester();
 
-function clearListeners(){
-   unsetListenerGetObject();
-   unsetListenerGetCopy();
-   unsetOffsetOnMouseClick();
-}
-function assert(condition, message){
-    if(!condition){
-        throw message;
-    }
-}
+
+
+
 
 
 

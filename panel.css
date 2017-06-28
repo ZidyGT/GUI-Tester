@@ -50,15 +50,19 @@ body {
 .left-sidebar{
     min-height: 900px;
     padding-top:5px;
-    padding-left: 2px;
+    padding-left: 5px;
     background-color:#f3f3f3;
     border-right: 1px solid #ccc;
 }
 
+.left-sidebar > col-md-4, .left-sidebar > col-md-8{
+    height:30px;
+}
+
 .right-sidebar{
     min-height: 900px;
-    padding-top:5px;
-    padding-left: 2px;
+    padding-top:10px;
+    padding-left: 10px;
     border-left: 1px solid #ccc;
 }
 
@@ -73,55 +77,62 @@ body {
 } 
 
 .toolbar-button{
-    border-right: 1px solid #777777;;
+    border-right: 1px solid #777777;
     background:none;
     font-size:20px;
 }
 
-.left-toolbar{
+.btn-group.active{
+    border-right: 1px solid #777777;
+    background:red;
+    font-size:20px;
 }
 
-.left-sidebar{
-    padding-left:15px;
-    padding-top:15px;
+.left-toolbar{
+    margin-top: 5px;
 }
+
 
 .toolbar-shadow {
     padding-bottom:4px;
     padding-top:4px;
+    padding-left:4px;
     background-color:#ccc;
-    position: relative;
-    white-space: nowrap;
-    height: 26px;
-    overflow: hidden;
-    z-index: 12;
-    display: flex;
-    flex: none;
+    position: relative;  
+    font-size:25px;  
     align-items: center;
     border-bottom: 1px solid #777777;
 }
 
+.nav-tabs{
+    margin-top:8px;
+}
 
-div {
-    display: block;
+.rec-h{
+    color:#0e47a3;
+    font-weight: bolder;
 }
 
 #comment{
     resize:vertical;
 }
 
-#content{
-    margin-top:5px;
-}
-
-#actual-error{
+#actual-test-error, #actual-testGroup-error, #play-error{
     color:red;
 }
 
-
 #testSheet{
     margin-top:10px;
-    margin-left:20px;
+    margin-left:5px;
+    float:bottom;
 }
+
+
+
+#testViewSheet{
+    margin-top:10px;
+}
+
+
 
 

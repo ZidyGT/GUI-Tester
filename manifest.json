@@ -9,27 +9,18 @@
     "scripts": ["background.js"],
     "persistent": false
   },
-  
- 
-  
-  "content_scripts": [ {
-    "matches": ["http://*/*","https://*/*"],
-    "js": ["jquery.min.js"]
-    } ],
-
 
   "devtools_page": "devtools.html",
     
-   "web_accessible_resources" : ["extension-script.js"],
+   "web_accessible_resources" : ["extension-script.js", "jquery.min.js"],
   
 
   "permissions": [
-    "storage",
-    "unlimitedStorage", 
+    "https://*/",
+    "file://*/",
     "tabs",
     "activeTab",
-    "https://ajax.googleapis.com/",
-    "http://*/",
-    "https://*/"
-  ]
+    "https://ajax.googleapis.com/"
+     ]
+
 }

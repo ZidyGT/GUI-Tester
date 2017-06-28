@@ -6,7 +6,7 @@ var BackPgController = function () {
 };
 
 BackPgController.prototype.exec = function () {
-    chrome.tabs.executeScript(null, {file: 'content.js'});
+    chrome.tabs.executeScript(null, {file: "content_script.js"});
 };
 
 BackPgController.prototype.messageListener = function (request, sender, sendResponse) {
