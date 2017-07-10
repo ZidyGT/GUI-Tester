@@ -1,4 +1,4 @@
-var Error = function (line, assert, error) {
+    var Error = function (line, assert, error) {
     this.line = line;
     this.assert = assert;
     this.error = error;
@@ -9,6 +9,18 @@ var Command = function (line, cmd) {
     this.command = cmd;
 };
 
+var Run = function (commands){
+    this.commands = commands;
+    this.error;
+    this.timestamp;
+    this.result = true;
+};
+
+Run.prototype.AddError = function(error){
+  this.result = false;
+  this.error = error;
+};
+
 var Scenare = function (name) {
     this.id;
     this.groupId;
@@ -16,7 +28,9 @@ var Scenare = function (name) {
     this.lineCounter = 0;
     this.comment;
     this.commands = new Array();
-    this.errors = new Array();
+    this.editorView;
+    this.consoleView;
+    this.runs = new Array();
 };
 
 Scenare.prototype.Add = function (cmd) {
@@ -26,15 +40,18 @@ Scenare.prototype.Add = function (cmd) {
     
 };
 
-Scenare.prototype.AddError = function (cmd, error) {
-    var _error = new Error(this.lineCounter - 1 ,cmd, error);
-    this.errors.push(_error);
-};
-
 Scenare.prototype.pushCommands = function (cmds) {
     cmds.forEach(function (item) {
         this.Add(item);
     }.bind(this));
+};
+
+Scenare.prototype.getStringArray = function (){
+  var Strings = new Array();
+  this.commands.forEach(function(command){
+      Strings.push(command.commmand);
+  });
+  return Strings;
 };
 
 var ScenareGroup = function (name) {
@@ -42,15 +59,17 @@ var ScenareGroup = function (name) {
     this.name = name;
     this.scenarios = new Array();
     this.comment;
+    this.consoleView;
 };
 
 var Model = function () {
-    this.reference = new Array();
+    this.reference;
     this.actualItem;
     this.Items = new Array();
     this.count = 1;
     this.idScenare = 0;
     this.idGroup = 0;
+    /*
     try {
         this.store = localStorage;
         this.store.clear();
@@ -58,7 +77,7 @@ var Model = function () {
     } catch (Exception) {
         console.error("localStorage is not supported");
     }
-    console.log(this.store);
+    */
 };
 
 
@@ -71,7 +90,7 @@ Model.prototype.InitScenario = function (name) {
     this.actualItem = new Scenare(name);
     this.actualItem.id = this.idScenare;
     this.idScenare++;
-    this.actualItem.pushCommands(this.reference);
+    this.actualItem.Add(this.reference);
     this.Items.push(this.actualItem);
     }
   
@@ -79,10 +98,10 @@ Model.prototype.InitScenario = function (name) {
 
 Model.prototype.InitScenarioFromGroup = function (name, idGroup) {
     var scenare = new Scenare(name);
-    this.groupid = idGroup;
+    scenare.groupid = idGroup;
     scenare.id = this.idScenare;
     this.idScenare++;
-    scenare.pushCommands(this.reference);
+    scenare.Add(this.reference);
     this.actualItem.scenarios.push(scenare);
     this.actualItem = scenare;
 };
@@ -92,7 +111,6 @@ Model.prototype.InitGroup = function (name) {
     this.actualItem.id = this.idGroup;
     this.idGroup++;
     this.Items.push(this.actualItem);
-    console.log(this.actualItem);
 };
 
 
@@ -103,9 +121,12 @@ Model.prototype.loadScenarios = function () {
 Model.prototype.saveScenare = function (scenarioId) {
     if (typeof (this.actualItem.groupid) !== "undefined") {
         this.Items.forEach(function (item) {
-            if (item.id === this.actualItem.groupid) {
+            if (item instanceof ScenareGroup && item.id === this.actualItem.groupid) {
                 item.scenarios.forEach(function (scenare) {
                     if (scenare.id === scenarioId) {
+                        this.actualItem.lineCounter = 0;
+                        this.actualItem.commands = new Array();
+                        this.actualItem.pushCommands(this.actualItem.editorView);
                         scenare = this.actualItem;
                     }
                 }.bind(this));
@@ -113,8 +134,12 @@ Model.prototype.saveScenare = function (scenarioId) {
         }.bind(this));
     } else {
         this.Items.forEach(function (item) {
-            if (item instanceof Scenare && item.id === scenarioId)
-                item = this.actualItem;
+            if (item instanceof Scenare && item.id === scenarioId){
+                        this.actualItem.lineCounter = 0;
+                        this.actualItem.commands = new Array();
+                        this.actualItem.pushCommands(this.actualItem.editorView);
+                        item = this.actualItem;
+            }
         }.bind(this));
     }
 };
@@ -170,3 +195,94 @@ Model.prototype.saveDescriptionGroup = function(comment){
     this.actualItem.comment = comment;
 };
 
+Model.prototype.removeTest = function(scenarioId) {
+    var scenarioIndex;
+    this.Items.forEach(function (item, index) {
+        if (item instanceof Scenare && item.id === scenarioId)
+            scenarioIndex = index;
+    }.bind(this));
+    this.Items.splice(scenarioIndex, 1);
+};
+
+
+Model.prototype.removeTestFromGroup = function(scenarioId, groupId) {
+    var scenarioIndex;
+        this.Items.forEach(function (item) {
+        if (item instanceof ScenareGroup && item.id === groupId)
+        {
+            item.scenarios.forEach(function(scenario, index){
+                 if(scenario.id === scenarioId){
+                     scenarioIndex = index;
+                 }
+             });
+             item.scenarios.splice(scenarioIndex, 1);
+        }
+    }.bind(this));
+};
+
+Model.prototype.removeGroup = function(groupId) {
+    var groupIndex;
+    this.Items.forEach(function (item, index) {
+        if (item instanceof ScenareGroup && item.id === groupId)
+            groupIndex = index;
+    });
+    this.Items.splice(groupIndex, 1);
+};
+
+Model.prototype.getScenare = function (scenareId) {
+    var scenare;
+    this.Items.forEach(function (item) {
+        if (item instanceof Scenare && item.id === scenareId)
+            scenare = item;
+    }.bind(this));
+    return scenare;
+};
+
+Model.prototype.getScenareGroup = function (scenareGroupId) {
+    var group;
+    this.Items.forEach(function (item) {
+        if (item instanceof ScenareGroup && item.id === scenareGroupId)
+            group = item;
+    }.bind(this));
+    return group;
+};
+
+Model.prototype.getScenareFromGroup = function (scenareId, groupId) {
+    var scenare;
+    this.Items.forEach(function (item) {
+        if (item instanceof ScenareGroup && item.id === groupId)
+        {
+            item.scenarios.forEach(function(scenario){
+                if(scenario.id === scenareId){
+                    scenare = scenario;
+                }
+            });      
+        }
+    }.bind(this));
+    return scenare;
+};
+
+
+Model.prototype.setScenareGroup = function (group) {
+    this.Items.forEach(function (item) {
+        if (item instanceof ScenareGroup && item.id === group.id)
+            item = group;
+    }.bind(this));
+};
+
+Model.prototype.setScenare = function (scenare) {
+    this.Items.forEach(function (item) {
+        if (item instanceof Scenare && item.id === scenare.id)
+            item = scenare;
+    }.bind(this));
+};
+
+Model.prototype.setScenareFromGroup = function (scenare) {
+    this.Items.forEach(function (item) {
+        if (item instanceof ScenareGroup && item.id === scenare.groupid)
+            item.forEach(function(scenario){
+                if(scenario.id === scenare.id)
+                    scenario = scenare;
+            });
+    }.bind(this));
+};

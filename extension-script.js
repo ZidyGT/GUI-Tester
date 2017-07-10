@@ -12,6 +12,8 @@ window.dispatchEvent(event);
 var GuiTester = function () {
     this.MainCanvasID = window.getMainCanvasObjectID();
     this.MouseOffset;
+    this.Event;
+    this.Element;
     var clientRect = document.getElementById(this.MainCanvasID).getBoundingClientRect();
     this.bounding = {x:clientRect.left, y:clientRect.top};
 
@@ -30,20 +32,33 @@ var GuiTester = function () {
         var event = new CustomEvent("Interaction", {detail: "offset"});
         window.dispatchEvent(event);
     }.bind(this);
-
+    
+    this.eventListener = function (event){
+        this.Element = $(event.target);
+        this.Event = event;
+        var event = new CustomEvent("Interaction", {detail: "event"});
+        window.dispatchEvent(event);
+    }.bind(this);
+    
     this.OffsetOnMouseClick = function () {
-        $("#" + this.MainCanvasID).on("click",this.mouseListenerOffset);
+        $("#" + this.MainCanvasID).click(this.mouseListenerOffset);
     };
 
     this.setListenerGetObject = function () {
-        $("#" + this.MainCanvasID).on("click",this.mouseListenerObject);
+        $("#" + this.MainCanvasID).click("click",this.mouseListenerObject);
     };
 
 
     this.clearListeners = function () {
-        $("#" + this.MainCanvasID).off("click",this.mouseListenerOffsetOnMouseClick);
-        $("#" + this.MainCanvasID).off("click",this.mouseListenerObject);
+        $("#" + this.MainCanvasID).unbind("click",this.mouseListenerOffsetOnMouseClick);
+        $("#" + this.MainCanvasID).unbind("click",this.mouseListenerObject);
+         $(document).unbind("click",this.EventListener);
     };
+    
+    this.setEventListener = function(){
+        $(document).click(this.eventListener);
+    };
+    
     this.assert = function assert(condition, message) {
         if (!condition) {
             throw message;

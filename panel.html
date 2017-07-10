@@ -6,81 +6,93 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- CSS -->
         <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <link href="jquery.terminal.min.css" rel="stylesheet">
-        <link href="panel.css" rel="stylesheet">
+        <link href="terminal/jquery.terminal.min.css" rel="stylesheet">
         <link href="icons/style.css" rel="stylesheet">
-        <!-- Javascript -->
-        <script src="jquery.min.js"></script>
-        <script src="bootstrap/js/bootstrap.min.js"></script> 
-        <script src="jquery.terminal.min.js"></script>
-        <script src="model.js"></script>
-        <script src="view.js"></script>
-        <script src="controller.js"></script>
+        <link rel="stylesheet" href="tree/jqtree.css">
+        <link href="panel.css" rel="stylesheet">
 
-        <script src="panel.js"></script>
+        <!-- Javascript -->
+        <script src="jquery.js"></script>
+        <script src="bootstrap/js/bootstrap.min.js" type="text/javascript" ></script> 
+        <script src="terminal/jquery.terminal.min.js" type="text/javascript" ></script>
+        <script src="ace/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="moment.js" type="text/javascript" ></script>
+        <script src="model.js" type="text/javascript" ></script>
+        <script src="view.js" type="text/javascript" ></script>
+        <script src="controller.js" type="text/javascript" ></script>
+        <script src="panel.js" type="text/javascript" ></script>
     </head>
     <body>
         <div class="toolbar-shadow">
             <div class="btn-group" role="group">
                 <button class="btn toolbar-button" id="offset" title="Offset">
-                    <span class="icon-icon_terc">
-                        <span class="path1"></span><span class="path2"></span><span class="path3"></span>
+                    <span class="glyphicon glyphicon-screenshot">
                     </span>
                 </button>
-                <div class="item-divider"></div>
-                <button class="btn toolbar-button" id="vyber" title="Selection">
-                    <span class="icon-icon_vyber">             
-                    </span>
+                <button class="btn toolbar-button" id="reference" title="Selection">
+                                    <span class="icon-icon_reference">
+                
+                </span>
                 </button>
-                <div class="item-divider"></div>
-                <button class="btn toolbar-button" id="reference" title="Scenario Selection">
-                    <span class="icon-icon_vyber_2">
-                        <span class="path1"></span><span class="path2"></span><span class="path3"></span>
-                    </span>
-                </button>
-                <div class="item-divider"></div>
-                <button class="btn toolbar-button" id="copy" title="Scenarion Deep Copy Selection">
-                    <span class="icon-icon_vyber_copy">
-                        <span class="path1"></span><span class="path2"></span>
+                <button class="btn toolbar-button" id="action" title="User actions">
+                    <span class="icon-user_action">
+
                     </span>
                 </button>
             </div>
+            <button class="btn toolbar-button" id="record" title="Recording off">
+                    <span class="glyphicon glyphicon-record">
+                    </span>
+                </button>
         </div>
         <div class="row col-md-12">
 
             <div class="col-md-3 left-sidebar">
-                 
-                <div class=" row col-md-12">
-                         
-                    <div class ="col-md-4">
-                        <strong>Manager testů</strong>
-                                      <div class ="left-toolbar">
-                    <div class="btn-group" role="group">
-                        <button id="play" type="button" class="btn btn-sm left-toolbar-button" title="Play test">
-                            <span class="glyphicon glyphicon-play"></span>
-                        </button>
-                        <button id ="createG" type="button" class="btn btn-sm left-toolbar-button" title="Create test group">
-                            <span class="glyphicon glyphicon-plus"></span>                       
-                        </button>
-                        <button id ="createS" type="button" class="btn btn-sm left-toolbar-button" title="Create test">
-                            <span class="glyphicon glyphicon-plus-sign"></span>
 
-                        </button>
-                    </div>                   
-                </div>
+                <div class=" row col-md-12">
+
+                    <div class ="col-md-5">
+                        <strong>Manager testů</strong>
+                        <div class ="left-toolbar">
+                            <div class="btn-group" role="group">
+                                <button id="play" type="button" class="btn btn-sm left-toolbar-button" title="Play test">
+                                    <span class="glyphicon glyphicon-play"></span>
+                                </button>
+                                <button id="remove" type="button" class="btn btn-sm left-toolbar-button" title="Remove selected (Shift + Click)">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                                <button id ="createG" type="button" class="btn btn-sm left-toolbar-button" title="Create test group">
+                                    <span class="glyphicon glyphicon-plus"></span>                       
+                                </button>
+                                <button id ="createS" type="button" class="btn btn-sm left-toolbar-button" title="Create test">
+                                    <span class="glyphicon glyphicon-plus-sign"></span>
+
+                                </button>
+                            </div>                   
+                        </div>
                     </div>
-                    <div class ="col-md-8">
-                         <div id="testSheet"></div>
+                    <div class ="col-md-7">
+                        <div id="testSheet">
+                            
+                        </div>
                     </div>
                 </div>
-                 <div class=" row col-md-12"><div id="testViewSheet"></div></div>
-  
-               
-   
-            </div>
-            <div class="col-md-6 context">
+                <div class=" row col-md-12">                          
+                                <div class="col-md-6" id="sheet-tree">
+                                <strong>Name</strong><div id="sheet-render"></div></div>
+                                <div class="col-md-6" id="sheet-selection">
+                                    <div class="col-md-4" id="proceed"><strong>Proceed</strong><div id="proceed-render"></div></div>
+                                    <div class="col-md-4" id="count"><strong>Count</strong><div id="count-render"></div></div>
+                                    <div class="col-md-4" id="selected"><strong>Selection</strong><div id="selection-render"></div></div>
+                                </div>
+                            </div></div>
+                
+
+
+
+            <div class="col-md-7 context">
                 <ul class="nav nav-tabs">
-                    <li class="nav-item" id="nav-console"><a href="#">Edit</a></li>
+                    <li class="nav-item" id="nav-edit"><a href="#">Edit</a></li>
                     <li class="nav-item" id="nav-summary"><a href="#">Summary</a></li>
                     <li class="nav-item" id="nav-description"><a href="#">Description</a></li>
                 </ul>
@@ -98,17 +110,26 @@
                             <tbody id ="summary-table"></tbody>
                         </table>
                     </div>
-                    <div class=" row col-md-12" id="console">
-                        <div class="col-md-6 cons-edit"><h4 class="edit-h">Editing console</h4><div id="edit-console" class="terminal" style="height: 75px;"></div></div>
-                                    <div class="col-md-6 cons-record"><h4 class ="rec-h">Recording console 
-                                            <span class="glyphicon glyphicon-record">
+                    <div class=" row col-md-12" id="edit">
+                        <div class="col-md-6 edit-console">
+                                <h4 class="edit-h">Interactive console 
+                                        <button class="btn btn-xs primary-button" id="Clear_Cs" title="Clear Console">
+                                            <span class="glyphicon glyphicon-ban-circle"></span></button> </h4>
+
+                            <div id="console" class="terminal" style="height: 75px;"></div></div>
+                        <div class="col-md-6 edit-editor"><h4 class ="rec-h">Editor
+                            </h4>
+                            <div class="div-editor">
+                            <div  id ="editor"></div></div>
+                        </div>
                             
-                                </span></h4><div id="rec-console" class="terminal" style="height: 75px;"></div></div>        
+                    </div>        
                     </div>
                 </div>
-            </div>
-            <div class="col-md-3 right-sidebar">
-                <strong>Průběh testů</strong>
+
+            
+            <div class="col-md-2 right-sidebar">
+                <strong>Poslední spuštěné testy</strong><div id ="last-proceed-render"></div>
             </div>
         </div>
 

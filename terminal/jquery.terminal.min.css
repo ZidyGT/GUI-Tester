@@ -85,45 +85,15 @@
     border-left-color: #aaa;
 }
 
-@-webkit-keyframes a {
-    0%,to {
-        background-color: #000;
-        color: #aaa;
-    }
-
-    50% {
-        background-color: #bbb;
-        color: #000;
-    }
-}
-
-@keyframes a {
-    0%,to {
-        background-color: #000;
-        color: #aaa;
-    }
-
-    50% {
-        background-color: #bbb;
-        color: #000;
-    }
-}
 
 .cmd .prompt, .terminal .terminal-output div div {
     display: block;
     line-height: 14px;
     height: auto;
-}
-
-#rec-console > .cmd{
-    float: left;
     color:#0e47a3;
 }
 
-#edit-console > .cmd {
-    float: left;
-    color:#ccc;
-}
+
 
 .cmd, .terminal {
     font-family: monospace;
@@ -170,23 +140,9 @@
     user-select: text;
 }
 
-.terminal, .terminal-output, .terminal-output div {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
 
-@-moz-document url-prefix() {
-    .terminal, .terminal-output, .terminal-output div {
-        -webkit-touch-callout: initial;
-        -webkit-user-select: initial;
-        -moz-user-select: initial;
-        -ms-user-select: initial;
-        user-select: auto;
-    }
-}
+
+
 
 .terminal table {
     border-collapse: collapse;

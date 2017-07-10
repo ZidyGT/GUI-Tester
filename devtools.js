@@ -20,6 +20,9 @@ var DevtoolsController = function (name, icon, panel) {
         } else if (msg.detail === "offset") {
             this.ExWindow.controller.insertCommandOffset();
         }    
+        else if (msg.detail === "event") {
+            this.ExWindow.controller.insertEvent();
+        }  
     }.bind(this);
 };
 
