@@ -575,7 +575,7 @@ View.prototype.renderSummaryTestGroup = function () {
         scenario.runs.forEach(function (run, index) {
             var panel = this.constructElement("div",{class: "panel"},{});
             var header = this.constructElement("div",{class: "panel-heading"},{});
-            header.text(run.timestamp.format("YYYY-MM-DD HH:mm").toString());
+            header.text(run.timestamp.format("HH:mm").toString());
             var body = this.constructElement("div",{class: "panel-body"},{});
             panel.append(header);
             this.getPanelBody(run, panel, body);      
@@ -592,7 +592,7 @@ View.prototype.renderSummaryTest = function () {
     this.model.actualItem.runs.forEach(function (run, index) {
         var panel = this.constructElement("div",{class: "panel"},{});
         var header = this.constructElement("div",{class: "panel-heading"},{});
-        header.text(run.timestamp.format("YYYY-MM-DD HH:mm").toString());
+        header.text(run.timestamp.format("HH:mm").toString());
         var body = this.constructElement("div",{class: "panel-body"},{});
         panel.append(header);
         this.getPanelBody(run, panel, body);
@@ -603,10 +603,22 @@ View.prototype.renderSummaryTest = function () {
 View.prototype.renderTestSummary = function (run, name) {
     var panel = this.constructElement("div",{class: "panel"},{});
     var header = this.constructElement("div",{class: "panel-heading"},{});
-    header.text(name + " " + run.timestamp.format("YYYY-MM-DD HH:mm").toString());
+    header.text(name);
     var body = this.constructElement("div",{class: "panel-body"},{});
     panel.append(header);
     this.getPanelBody(run, panel, body);
 this.lastProceedRender.append(panel);
+};
 
+View.prototype.renderTestSummaryFromGroup = function (run, name, groupName) {
+    var panel = this.constructElement("div",{class: "panel"},{});
+    var header = this.constructElement("div",{class: "panel-heading"},{});
+    var strong = this.constructElement("strong",{},{});
+    strong.text(groupName + " / ");
+    header.text(name);
+    header.prepend(strong);
+    var body = this.constructElement("div",{class: "panel-body"},{});
+    panel.append(header);
+    this.getPanelBody(run, panel, body);
+this.lastProceedRender.append(panel);
 };

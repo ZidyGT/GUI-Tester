@@ -54,7 +54,7 @@ body {
     height:30px;
 }
 
-left-toolbar{
+.left-toolbar{
     margin-bottom:15px;
 }
 
@@ -69,7 +69,7 @@ left-toolbar{
     margin-top:15px;
 }
 
-.success-command, .error-command, .unexec-command{
+.success-command, .error-command, .unexec-command, .exec-command{
     display:block;
 }
 .success-command{
@@ -279,18 +279,19 @@ ul, li{
     height:20px;
     font-size: 14px;
     font-weight: 700;
+    border-radius:12px;
 }
 
-.proceed{
-    background-color:green;
+.procced{
+    background-color:#96FF68;
 }
 
-.unproceed{
-    background-color:red;
+.unprocced{
+    background-color:#FF2E00;
 }
 
-.nonproceed{
-    background-color:black;
+.nonprocced{
+    background-color:goldenrod;
 }
 
 .edit-editor, #nav-summary, #nav-description, #summary, #description {

@@ -150,9 +150,9 @@ Controller.prototype.listener = function (event) {
         item = item.parent();
     }
     item.addClass("active");
-    
+
     console.log(this);
-    
+
     this.saveAndLoad(item);
 
     if (this.model.actualItem instanceof window.Scenare && this.view.navbar.find(".active").attr("id") === "nav-description") {
@@ -170,23 +170,22 @@ Controller.prototype.testSheetBehaviour = function () {
         while (!item.hasClass("check-div")) {
             item = item.parent();
         }
-        var groupId = parseInt(item.attr("id").replace("checkbox-",""));
+        var groupId = parseInt(item.attr("id").replace("checkbox-", ""));
         var group = this.model.getScenareGroup(groupId);
         var checkbox = item.find(".form-check-input");
-        if(checkbox.prop("checked") === true){
-            group.scenarios.forEach(function(scenario){
-            var checkDiv = this.view.testSelectionRender.find(".check-div.group-item-check[id = checkbox-" + scenario.id + "]");
-            var check = checkDiv.find(".form-check-input");
-            check.prop({checked:false});
-            checkDiv.css({visibility:"hidden"});
-        }.bind(this));
-        }
-        else if(checkbox.prop("checked") === false){
-            group.scenarios.forEach(function(scenario){
-            var checkDiv = this.view.testSelectionRender.find(".check-div.group-item-check[id = checkbox-" + scenario.id + "]");
-            var check = checkDiv.find(".form-check-input");
-            checkDiv.css({visibility:"visible"});
-        }.bind(this));
+        if (checkbox.prop("checked") === true) {
+            group.scenarios.forEach(function (scenario) {
+                var checkDiv = this.view.testSelectionRender.find(".check-div.group-item-check[id = checkbox-" + scenario.id + "]");
+                var check = checkDiv.find(".form-check-input");
+                check.prop({checked: false});
+                checkDiv.css({visibility: "hidden"});
+            }.bind(this));
+        } else if (checkbox.prop("checked") === false) {
+            group.scenarios.forEach(function (scenario) {
+                var checkDiv = this.view.testSelectionRender.find(".check-div.group-item-check[id = checkbox-" + scenario.id + "]");
+                var check = checkDiv.find(".form-check-input");
+                checkDiv.css({visibility: "visible"});
+            }.bind(this));
         }
 
     }.bind(this);
@@ -216,17 +215,15 @@ Controller.prototype.removeItems = function () {
     var TestItems = $();
     var GroupItems = $();
     var TestGroupItems = $();
-  
-    
-    Items.each(function(index, elem){
-        var item =  $(elem).parent();
-        if (item.hasClass("check-test")){
+
+
+    Items.each(function (index, elem) {
+        var item = $(elem).parent();
+        if (item.hasClass("check-test")) {
             TestItems.push(item);
-        }
-        else if(item.hasClass("check-group")){
+        } else if (item.hasClass("check-group")) {
             GroupItems.push(item);
-        }
-        else if(item.hasClass("group-item-check")){
+        } else if (item.hasClass("group-item-check")) {
             TestGroupItems.push(item);
         }
     }.bind(this));
@@ -285,7 +282,7 @@ Controller.prototype.removeItems = function () {
             } else if (this.model.actualItem instanceof window.ScenareGroup) {
                 this.view.activeGroup();
             }
-        } else 
+        } else
         {
             if (this.model.actualItem instanceof window.Scenare) {
                 if (typeof this.model.actualItem.id === "undefined") {
@@ -335,13 +332,13 @@ Controller.prototype.LeftMenuBehaviour = function () {
 
                 } else if (this.model.actualItem instanceof window.ScenareGroup)
                     this.model.saveScenareGroup(this.model.actualItem.id);
-                
+
                 var Checkboxes = this.view.testSelectionRender.find(".form-check-input:checked");
                 var Items = $();
-                Checkboxes.each(function(index, elem){
+                Checkboxes.each(function (index, elem) {
                     Items.push($(elem).parent());
                 }.bind(this));
-                
+
                 Items.each(function (index, item) {
                     if ($(item).hasClass("check-group"))
                     {
@@ -370,10 +367,10 @@ Controller.prototype.LeftMenuBehaviour = function () {
 };
 
 Controller.prototype.testItemBehaviour = function () {
-    
+
     var element = this.view.getTestItem();
     var button = $(element).find("#actual-test-button");
-    
+
     var tryInsert = function () {
         var name = $(element).find("#actual-test-input").val();
         if (name === "")
@@ -404,7 +401,7 @@ Controller.prototype.testItemBehaviour = function () {
             $(document).unbind("keyup", pressKeyListener);
         }
     }.bind(this);
-    
+
     var pressKeyListener = function (event) {
         if (event.keyCode === 13) {
             tryInsert();
@@ -415,7 +412,7 @@ Controller.prototype.testItemBehaviour = function () {
             $(document).unbind("keyup", pressKeyListener);
         }
     }.bind(this);
-    
+
     button.click(tryInsert);
     $(document).keyup(pressKeyListener);
     var ReturnButton = $(element).find("#actual-test-return-button");
@@ -427,10 +424,10 @@ Controller.prototype.testItemBehaviour = function () {
 };
 
 Controller.prototype.testGroupBehaviour = function () {
-    
+
     var element = this.view.getGroupItem();
     var button = $(element).find("#actual-testGroup-button");
-    
+
     var pressKeyListener = function (event) {
         if (event.keyCode === 13) {
             tryInsert();
@@ -441,7 +438,7 @@ Controller.prototype.testGroupBehaviour = function () {
             this.view.removeItemGroup();
         }
     }.bind(this);
-    
+
     var tryInsert = function () {
         var name = $(element).find("#actual-testGroup-input").val();
         if (name === "")
@@ -469,12 +466,12 @@ Controller.prototype.testGroupBehaviour = function () {
 
         }
     }.bind(this);
-    
+
     button.click(tryInsert);
     $(document).keyup(pressKeyListener);
-    
+
     var ReturnButton = $(element).find("#actual-group-return-button");
-    
+
     ReturnButton.click(function () {
         button.unbind("click", tryInsert);
         $(document).unbind("keyup", pressKeyListener);
@@ -484,14 +481,14 @@ Controller.prototype.testGroupBehaviour = function () {
 
 Controller.prototype.ContextBehaviour = function () {
     var elem = this.view.navbarMenu;
-    
+
     elem.each(function (index, element) {
-        
+
         $(element).click(function () {
             this.view.clearNavBarMenu();
             $(element).addClass("active");
             this.view.renderContent();
-            
+
             if ($(element).attr("id") === "nav-description") {
                 if (this.model.actualItem instanceof window.Scenare) {
                     this.btnTestCommentBehaviour();
@@ -500,7 +497,7 @@ Controller.prototype.ContextBehaviour = function () {
                     this.btnGroupCommentBehaviour();
                 }
             }
-            
+
         }.bind(this));
     }.bind(this));
 };
@@ -546,17 +543,17 @@ Controller.prototype.TermInit = function (cons) {
             if (command !== '') {
                 try {
                     if (this.record === true) {
-                        
+
                         this.model.actualItem.Add(command);
                         var position = this.editor.session.doc.insertMergedLines(this.editor.getCursorPosition(), ['', '']);
                         position.column = 0;
                         this.editor.moveCursorToPosition(position);
                         this.editor.insert(command);
-                        
+
                     }
                     chrome.devtools.inspectedWindow.eval(command,
                             function (result, exception) {
-                                
+
                                 if (typeof (result) !== "undefined") {
                                     if (typeof (result) === "boolean") {
                                         this.terminal.echo(result.toString());
@@ -568,7 +565,7 @@ Controller.prototype.TermInit = function (cons) {
                                     } else if (exception.isError === true)
                                         console.error(exception.code);
                                 }
-                                
+
                             }.bind(this));
                 } catch (e) {
                     console.error(e);
@@ -621,25 +618,41 @@ Controller.prototype.insertEvent = function () {
     this.terminal.echo(__cmd);
 };
 
+Controller.prototype.active = function () {
+    this.view.renderScenarios();
+    this.testSheetBehaviour();
+    if (this.model.actualItem instanceof window.Scenare) {
+        if (typeof this.model.actualItem.groupid === "undefined")
+            this.view.activeScenario();
+        else
+            this.view.activeScenarioFromGroup();
+    } else if (this.model.actualItem instanceof window.ScenareGroup) {
+        this.view.activeGroup();
+    }
+};
+
 Controller.prototype.proceedGroup = function (groupId) {
     var group = this.model.getScenareGroup(groupId);
     group.scenarios.forEach(function (item) {
-        this.runTest(item);
+        this.runTestFromGroup(item, group.name);
     }.bind(this));
     this.model.setScenareGroup(group);
+    this.active();
 };
 
 Controller.prototype.proceedTest = function (scenareId) {
     var scenare = this.model.getScenare(scenareId);
     this.runTest(scenare);
     this.model.setScenare(scenare);
+    this.active();
 };
 
 Controller.prototype.proceedTestFromGroup = function (scenareId, groupId) {
     var scenare = this.model.getScenareFromGroup(scenareId, groupId);
-    this.runTest(scenare);
+    var name = this.model.getGroupName(groupId);
+    this.runTestFromGroup(scenare);
     this.model.setScenare(scenare);
-
+    this.active();
 };
 
 
@@ -665,6 +678,38 @@ Controller.prototype.runTest = function (scenario) {
                                 } else {
                                     if ((run.commands.length - 1) === index) {
                                         this.view.renderTestSummary(run, scenario.name);
+                                        if (this.view.navbar.find("#nav-summary").hasClass("active"))
+                                            this.view.renderContext("summary");
+                                    }
+                                }
+                            }.bind(this));
+            }.bind(this));
+    scenario.runs.push(run);
+    this.play = false;
+};
+
+Controller.prototype.runTestFromGroup = function (scenario, groupName) {
+    var run = new window.Run(scenario.commands);
+    run.timestamp = new window.moment();
+    this.play = true;
+    run.commands.forEach(
+            function (item, index) {
+                if (this.play === true)
+                    chrome.devtools.inspectedWindow.eval(item.command,
+                            function (result, exception) {
+                                if (typeof (exception) !== "undefined") {
+                                    if (exception.isException === true)
+                                    {
+                                        run.AddError(new window.Error(item.line, item.command, exception.value));
+                                        this.play = false;
+                                        this.view.renderTestSummaryFromGroup(run, scenario.name, groupName);
+                                        if (this.view.navbar.find("#nav-summary").hasClass("active"))
+                                            this.view.renderContext("summary");
+                                    } else if (exception.isError === true)
+                                        console.error(exception.code);
+                                } else {
+                                    if ((run.commands.length - 1) === index) {
+                                        this.view.renderTestSummaryFromGroup(run, scenario.name, groupName);
                                         if (this.view.navbar.find("#nav-summary").hasClass("active"))
                                             this.view.renderContext("summary");
                                     }

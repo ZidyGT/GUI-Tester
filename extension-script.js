@@ -59,9 +59,20 @@ var GuiTester = function () {
         $(document).click(this.eventListener);
     };
     
-    this.assert = function assert(condition, message) {
+    this.assertTrue = function (condition) {
         if (!condition) {
-            throw message;
+            throw "Failure - should be true";
+        }
+    };
+        
+    this.assertFalse = function (condition) {
+        if (condition) {
+            throw "Failure - should be false";
+        }
+    };
+    this.assertEqual = function (object, object2) {
+        if (object !== object2) {
+            throw "Failure - objects should be equal";
         }
     };
 };

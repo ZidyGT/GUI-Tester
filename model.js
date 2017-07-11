@@ -247,6 +247,18 @@ Model.prototype.getScenareGroup = function (scenareGroupId) {
     return group;
 };
 
+Model.prototype.getGroupName = function (scenareGroupId) {
+    var name;
+    this.Items.forEach(function (item) {
+        if (item instanceof ScenareGroup && item.id === scenareGroupId)
+            name = item.name;
+    }.bind(this));
+    return name;
+};
+
+
+
+
 Model.prototype.getScenareFromGroup = function (scenareId, groupId) {
     var scenare;
     this.Items.forEach(function (item) {
