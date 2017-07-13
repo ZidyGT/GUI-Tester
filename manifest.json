@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "GUI Tester",
-  "description": "Tento doplněk testuje GUI elementy webové stránky",
+  "description": "This extension test GUI elements of web page",
   "version": "0.3",
 
   "background": {
