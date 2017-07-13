@@ -113,16 +113,16 @@ View.prototype.insertTestSheet = function () {
     var form = $("<div></div>").css({display: "block"});
     form.attr({id: "test-item"});
     var input = this.constructUnarElement("input", {type: 'text', class: "form-check-input", id: "actual-test-input", placeholder: "Name of test"}, {});
-    var button = this.constructElement("button", {type: 'text', class: "btn-xs", id: "actual-test-button", title: "Save test"}, {display: "inline-block"});
+    var button = this.constructElement("button", {type: 'text', class: "btn-xs", id: "actual-test-button", title: "Save test (Enter)"}, {display: "inline-block"});
     var span = this.constructElement("span", {class: "glyphicon glyphicon-floppy-disk"}, {});
-    var ReturnButton = this.constructElement("button", {type: 'text', class: "btn-xs", id: "actual-test-return-button", title: "Return back"}, {});
-    var ReturnSpan = this.constructElement("span", {class: "glyphicon glyphicon-arrow-left"}, {});
+    var ReturnButton = this.constructElement("button", {type: 'text', class: "btn-xs", id: "actual-test-return-button", title: "Return back (End)"}, {});
+    var ReturnSpan = this.constructElement("span", {class: "glyphicon glyphicon glyphicon-remove"}, {});
     var error = this.constructElement("div", {id: "actual-test-error"}, {visibillity: "hidden"});
     form.append(input);
     button.append(span);
-    form.append(button);
     ReturnButton.append(ReturnSpan);
     form.append(ReturnButton);
+    form.append(button);
     form.prepend(error);
     form.appendTo("#testSheet");
 };
@@ -134,16 +134,16 @@ View.prototype.insertGroupSheet = function ()
     this.leftPanel.find("#createS").prop("disabled", true);
     var form = this.constructElement("div", {id: "testGroup-item"}, {display: "block"});
     var input = this.constructUnarElement("input", {type: "text", class: "form-check-input", id: "actual-testGroup-input", placeholder: "Name of Group test"}, {});
-    var button = this.constructElement("button", {type: "text", class: "btn-xs", id: "actual-testGroup-button", title: "Save test group"}, {display: "inline-block"});
-    var span = this.constructElement("span", {class: "glyphicon glyphicon glyphicon-tasks"}, {});
-    var ReturnButton = this.constructElement("button", {type: "text", class: "btn-xs", id: "actual-group-return-button", title: "Return back"}, {});
-    var ReturnSpan = this.constructElement("span", {class: "glyphicon glyphicon-arrow-left"}, {});
+    var button = this.constructElement("button", {type: "text", class: "btn-xs", id: "actual-testGroup-button", title: "Save test group (Enter)"}, {display: "inline-block"});
+    var span = this.constructElement("span", {class: "glyphicon glyphicon glyphicon-floppy-disk"}, {});
+    var ReturnButton = this.constructElement("button", {type: "text", class: "btn-xs", id: "actual-group-return-button", title: "Return back (End)"}, {});
+    var ReturnSpan = this.constructElement("span", {class: "glyphicon glyphicon glyphicon-remove"}, {});
     var error = this.constructElement("div", {id: "actual-testGroup-error"}, {visibillity: "hidden"});
     form.append(input);
     button.append(span);
-    form.append(button);
     ReturnButton.append(ReturnSpan);
     form.append(ReturnButton);
+    form.append(button);
     form.prepend(error);
     form.appendTo("#testSheet");
 };
@@ -395,13 +395,8 @@ View.prototype.renderScenarios = function () {
             this.insertCountGroup(item);
 
             var Grouplist = this.getItemGroup(item);
-
+            
             var _Grouplist = this.constructElement("ul",{class: "list scenareGroup-list"},{});
-            if (Grouplist.find(".glyphicon").hasClass("glyphicon-folder-close")) {
-                _Grouplist.css({display: "none"});
-            } else {
-                _Grouplist.css({display: "block"});
-            }
 
             item.scenarios.forEach(function (scenario) {
 
@@ -538,6 +533,7 @@ View.prototype.getPanelBody = function (run, panel, body) {
             span.text(item.command);
             body.append(span);
         }.bind(this));
+        panel.addClass("suc");
         panel.append(body);
     } else if (run.error instanceof window.Error) {
         var footer = this.constructElement("div",{class: "panel-footer"}, {});
@@ -556,6 +552,8 @@ View.prototype.getPanelBody = function (run, panel, body) {
             body.append(_span);
             footer.text(run.error.error);
         }.bind(this));
+        body.addClass("in");
+        panel.addClass("fai");
         panel.append(body);
         panel.append(footer);
     }
@@ -575,8 +573,10 @@ View.prototype.renderSummaryTestGroup = function () {
         scenario.runs.forEach(function (run, index) {
             var panel = this.constructElement("div",{class: "panel"},{});
             var header = this.constructElement("div",{class: "panel-heading"},{});
-            header.text(run.timestamp.format("HH:mm").toString());
-            var body = this.constructElement("div",{class: "panel-body"},{});
+            var href = this.constructElement("a",{class: "panel", 'data-toggle' : "collapse", href :"#run-s-" + run.id},{});
+     href.text(run.timestamp.format("HH:mm:ss").toString());
+     header.append(href);
+            var body = this.constructElement("div",{class: "panel-body collapse", id: "run-s-" + run.id},{});
             panel.append(header);
             this.getPanelBody(run, panel, body);      
             this.summary.append(panel);
@@ -592,8 +592,10 @@ View.prototype.renderSummaryTest = function () {
     this.model.actualItem.runs.forEach(function (run, index) {
         var panel = this.constructElement("div",{class: "panel"},{});
         var header = this.constructElement("div",{class: "panel-heading"},{});
-        header.text(run.timestamp.format("HH:mm").toString());
-        var body = this.constructElement("div",{class: "panel-body"},{});
+        var href = this.constructElement("a",{class: "panel", 'data-toggle' : "collapse", href :"#run-s-" + run.id},{});
+     href.text(run.timestamp.format("HH:mm:ss").toString());
+     header.append(href);
+        var body = this.constructElement("div",{class: "panel-body collapse", id: "run-s-" + run.id},{});
         panel.append(header);
         this.getPanelBody(run, panel, body);
         this.summary.append(panel);
@@ -603,8 +605,10 @@ View.prototype.renderSummaryTest = function () {
 View.prototype.renderTestSummary = function (run, name) {
     var panel = this.constructElement("div",{class: "panel"},{});
     var header = this.constructElement("div",{class: "panel-heading"},{});
-    header.text(name);
-    var body = this.constructElement("div",{class: "panel-body"},{});
+    var href = this.constructElement("a",{class: "panel", 'data-toggle' : "collapse", href :"#run-p-" + run.id},{});
+    href.text(name);
+    header.append(href);
+    var body = this.constructElement("div",{class: "panel-body collapse", id: "run-p-" + run.id},{});
     panel.append(header);
     this.getPanelBody(run, panel, body);
 this.lastProceedRender.append(panel);
@@ -615,9 +619,12 @@ View.prototype.renderTestSummaryFromGroup = function (run, name, groupName) {
     var header = this.constructElement("div",{class: "panel-heading"},{});
     var strong = this.constructElement("strong",{},{});
     strong.text(groupName + " / ");
-    header.text(name);
-    header.prepend(strong);
-    var body = this.constructElement("div",{class: "panel-body"},{});
+    var header = this.constructElement("div",{class: "panel-heading"},{});
+    var href = this.constructElement("a",{class: "panel", 'data-toggle' : "collapse", href : "#run-p-" + run.id},{});
+    href.text(name);
+    href.prepend(strong);
+    header.append(href);
+    var body = this.constructElement("div",{class: "panel-body collapse", id: "run-p-" + run.id},{});
     panel.append(header);
     this.getPanelBody(run, panel, body);
 this.lastProceedRender.append(panel);

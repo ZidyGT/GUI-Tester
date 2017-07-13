@@ -151,8 +151,6 @@ Controller.prototype.listener = function (event) {
     }
     item.addClass("active");
 
-    console.log(this);
-
     this.saveAndLoad(item);
 
     if (this.model.actualItem instanceof window.Scenare && this.view.navbar.find(".active").attr("id") === "nav-description") {
@@ -177,17 +175,9 @@ Controller.prototype.testSheetBehaviour = function () {
             group.scenarios.forEach(function (scenario) {
                 var checkDiv = this.view.testSelectionRender.find(".check-div.group-item-check[id = checkbox-" + scenario.id + "]");
                 var check = checkDiv.find(".form-check-input");
-                check.prop({checked: false});
-                checkDiv.css({visibility: "hidden"});
+                check.prop({checked: true});
             }.bind(this));
-        } else if (checkbox.prop("checked") === false) {
-            group.scenarios.forEach(function (scenario) {
-                var checkDiv = this.view.testSelectionRender.find(".check-div.group-item-check[id = checkbox-" + scenario.id + "]");
-                var check = checkDiv.find(".form-check-input");
-                checkDiv.css({visibility: "visible"});
-            }.bind(this));
-        }
-
+        } 
     }.bind(this);
 
     var checks = this.view.testSelectionRender.find(".check-div.check-group");
@@ -336,16 +326,13 @@ Controller.prototype.LeftMenuBehaviour = function () {
                 var Checkboxes = this.view.testSelectionRender.find(".form-check-input:checked");
                 var Items = $();
                 Checkboxes.each(function (index, elem) {
-                    Items.push($(elem).parent());
+                    var element = $(elem).parent();
+                    if(!element.hasClass("check-group"))
+                    Items.push(element);
                 }.bind(this));
 
                 Items.each(function (index, item) {
-                    if ($(item).hasClass("check-group"))
-                    {
-                        var groupId = parseInt($(item).attr("id").replace("checkbox-", ""));
-                        this.proceedGroup(groupId);
-
-                    } else if ($(item).hasClass("check-test"))
+                    if ($(item).hasClass("check-test"))
                     {
                         var testId = parseInt($(item).attr("id").replace("checkbox-", ""));
                         this.proceedTest(testId);
@@ -405,7 +392,7 @@ Controller.prototype.testItemBehaviour = function () {
     var pressKeyListener = function (event) {
         if (event.keyCode === 13) {
             tryInsert();
-        } else if (event.keyCode === 66)
+        } else if (event.keyCode === 46)
         {
             this.view.removeItemTest();
             button.unbind("click", tryInsert);
@@ -431,7 +418,7 @@ Controller.prototype.testGroupBehaviour = function () {
     var pressKeyListener = function (event) {
         if (event.keyCode === 13) {
             tryInsert();
-        } else if (event.keyCode === 66)
+        } else if (event.keyCode === 46)
         {
             button.unbind("click", tryInsert);
             $(document).unbind("keyup", pressKeyListener);
@@ -619,7 +606,6 @@ Controller.prototype.insertEvent = function () {
 };
 
 Controller.prototype.active = function () {
-    this.view.renderScenarios();
     this.testSheetBehaviour();
     if (this.model.actualItem instanceof window.Scenare) {
         if (typeof this.model.actualItem.groupid === "undefined")
@@ -631,33 +617,22 @@ Controller.prototype.active = function () {
     }
 };
 
-Controller.prototype.proceedGroup = function (groupId) {
-    var group = this.model.getScenareGroup(groupId);
-    group.scenarios.forEach(function (item) {
-        this.runTestFromGroup(item, group.name);
-    }.bind(this));
-    this.model.setScenareGroup(group);
-    this.active();
-};
-
 Controller.prototype.proceedTest = function (scenareId) {
     var scenare = this.model.getScenare(scenareId);
     this.runTest(scenare);
     this.model.setScenare(scenare);
-    this.active();
 };
 
 Controller.prototype.proceedTestFromGroup = function (scenareId, groupId) {
     var scenare = this.model.getScenareFromGroup(scenareId, groupId);
     var name = this.model.getGroupName(groupId);
-    this.runTestFromGroup(scenare);
+    this.runTestFromGroup(scenare, name);
     this.model.setScenare(scenare);
-    this.active();
 };
 
 
 Controller.prototype.runTest = function (scenario) {
-    var run = new window.Run(scenario.commands);
+    var run = new window.Run(scenario.commands, this.model.genId());
     run.timestamp = new window.moment();
     this.play = true;
     run.commands.forEach(
@@ -671,13 +646,17 @@ Controller.prototype.runTest = function (scenario) {
                                         run.AddError(new window.Error(item.line, item.command, exception.value));
                                         this.play = false;
                                         this.view.renderTestSummary(run, scenario.name);
+                                        this.view.renderScenarios();
+                                        this.active();
                                         if (this.view.navbar.find("#nav-summary").hasClass("active"))
                                             this.view.renderContext("summary");
                                     } else if (exception.isError === true)
                                         console.error(exception.code);
-                                } else {
+                                } else if(typeof (run.error) === "undefined"){
                                     if ((run.commands.length - 1) === index) {
                                         this.view.renderTestSummary(run, scenario.name);
+                                        this.view.renderScenarios();
+                                        this.active();
                                         if (this.view.navbar.find("#nav-summary").hasClass("active"))
                                             this.view.renderContext("summary");
                                     }
@@ -689,7 +668,8 @@ Controller.prototype.runTest = function (scenario) {
 };
 
 Controller.prototype.runTestFromGroup = function (scenario, groupName) {
-    var run = new window.Run(scenario.commands);
+    var run = new window.Run(scenario.commands, this.model.genId());
+    
     run.timestamp = new window.moment();
     this.play = true;
     run.commands.forEach(
@@ -703,13 +683,17 @@ Controller.prototype.runTestFromGroup = function (scenario, groupName) {
                                         run.AddError(new window.Error(item.line, item.command, exception.value));
                                         this.play = false;
                                         this.view.renderTestSummaryFromGroup(run, scenario.name, groupName);
+                                        this.view.renderScenarios();
+                                        this.active();
                                         if (this.view.navbar.find("#nav-summary").hasClass("active"))
                                             this.view.renderContext("summary");
                                     } else if (exception.isError === true)
                                         console.error(exception.code);
-                                } else {
+                                } else if(typeof (run.error) === "undefined"){
                                     if ((run.commands.length - 1) === index) {
                                         this.view.renderTestSummaryFromGroup(run, scenario.name, groupName);
+                                        this.view.renderScenarios();
+                                        this.active();
                                         if (this.view.navbar.find("#nav-summary").hasClass("active"))
                                             this.view.renderContext("summary");
                                     }

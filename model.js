@@ -9,10 +9,9 @@ var Command = function (line, cmd) {
     this.command = cmd;
 };
 
-var Run = function (commands){
+var Run = function (commands, id){
+    this.id = id;
     this.commands = commands;
-    this.error;
-    this.timestamp;
     this.result = true;
 };
 
@@ -22,15 +21,11 @@ Run.prototype.AddError = function(error){
 };
 
 var Scenare = function (name) {
-    this.id;
-    this.groupId;
     this.name = name;
     this.lineCounter = 0;
-    this.comment;
     this.commands = new Array();
-    this.editorView;
-    this.consoleView;
     this.runs = new Array();
+    
 };
 
 Scenare.prototype.Add = function (cmd) {
@@ -55,7 +50,6 @@ Scenare.prototype.getStringArray = function (){
 };
 
 var ScenareGroup = function (name) {
-    this.id;
     this.name = name;
     this.scenarios = new Array();
     this.comment;
@@ -67,17 +61,11 @@ var Model = function () {
     this.actualItem;
     this.Items = new Array();
     this.count = 1;
-    this.idScenare = 0;
-    this.idGroup = 0;
-    /*
-    try {
-        this.store = localStorage;
-        this.store.clear();
-        this.store.setItem("tests", JSON.stringify({tests: new Array()}));
-    } catch (Exception) {
-        console.error("localStorage is not supported");
-    }
-    */
+    var id = 0;
+    this.genId = function(){
+        return id++;
+    };
+
 };
 
 
@@ -88,8 +76,7 @@ Model.prototype.InitScenario = function (name) {
     else
     {
     this.actualItem = new Scenare(name);
-    this.actualItem.id = this.idScenare;
-    this.idScenare++;
+    this.actualItem.id = this.genId();
     this.actualItem.Add(this.reference);
     this.Items.push(this.actualItem);
     }
@@ -99,8 +86,7 @@ Model.prototype.InitScenario = function (name) {
 Model.prototype.InitScenarioFromGroup = function (name, idGroup) {
     var scenare = new Scenare(name);
     scenare.groupid = idGroup;
-    scenare.id = this.idScenare;
-    this.idScenare++;
+    scenare.id = this.genId();
     scenare.Add(this.reference);
     this.actualItem.scenarios.push(scenare);
     this.actualItem = scenare;
@@ -108,8 +94,7 @@ Model.prototype.InitScenarioFromGroup = function (name, idGroup) {
 
 Model.prototype.InitGroup = function (name) {
     this.actualItem = new ScenareGroup(name);
-    this.actualItem.id = this.idGroup;
-    this.idGroup++;
+    this.actualItem.id = this.genId();
     this.Items.push(this.actualItem);
 };
 

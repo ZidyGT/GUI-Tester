@@ -72,6 +72,21 @@ body {
 .success-command, .error-command, .unexec-command, .exec-command{
     display:block;
 }
+
+.panel-heading > a{
+    background-color:transparent;
+    font-style:normal;
+    text-decoration: none;
+}
+
+.panel.suc > .panel-heading > a{
+    color:#006633;
+}
+
+.panel.fai > .panel-heading > a{
+    color:#a22d2d;
+}
+
 .success-command{
     color:#006633;
 }
@@ -318,6 +333,10 @@ ul, li{
 
 #testViewSheet{
     margin-top:10px;
+}
+
+#summary > .panel{
+    width:75%;
 }
 
 

@@ -8,7 +8,6 @@
         <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link href="terminal/jquery.terminal.min.css" rel="stylesheet">
         <link href="icons/style.css" rel="stylesheet">
-        <link rel="stylesheet" href="tree/jqtree.css">
         <link href="panel.css" rel="stylesheet">
 
         <!-- Javascript -->
@@ -35,7 +34,7 @@
                 </span>
                 </button>
                 <button class="btn toolbar-button" id="action" title="User actions">
-                    <span class="icon-user_action">
+                    <span class="glyphicon glyphicon-user">
 
                     </span>
                 </button>
@@ -54,12 +53,13 @@
                     <div class ="col-md-5">
                         <strong>Manager testů</strong>
                         <div class ="left-toolbar">
+  
                             <div class="btn-group" role="group">
+                                                           <button id="remove" type="button" class="btn btn-sm left-toolbar-button" title="Remove selected (Shift + Click)">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
                                 <button id="play" type="button" class="btn btn-sm left-toolbar-button" title="Play test">
                                     <span class="glyphicon glyphicon-play"></span>
-                                </button>
-                                <button id="remove" type="button" class="btn btn-sm left-toolbar-button" title="Remove selected (Shift + Click)">
-                                    <span class="glyphicon glyphicon-trash"></span>
                                 </button>
                                 <button id ="createG" type="button" class="btn btn-sm left-toolbar-button" title="Create test group">
                                     <span class="glyphicon glyphicon-plus"></span>                       
@@ -129,7 +129,7 @@
 
             
             <div class="col-md-2 right-sidebar">
-                <strong>Poslední spuštěné testy</strong><div id ="last-proceed-render"></div>
+                <strong>Last procced</strong><div id ="last-proceed-render"></div>
             </div>
         </div>
 
