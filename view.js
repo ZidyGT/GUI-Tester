@@ -6,7 +6,6 @@
 
 var View = function (model) {
     this.model = model;
-    this.tree;
     this.toolbar = $(".toolbar-shadow");
     this.menu = $(".toolbar-shadow > .btn-group > button.btn");
 

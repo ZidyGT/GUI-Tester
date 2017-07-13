@@ -3,8 +3,6 @@ var Controller = function (model, view, terminal) {
     this.model = model;
     this.view = view;
     this.record = false;
-    this.play;
-    this.terminal;
     this.editor = window.ace.edit("editor");
     this.LeftMenuBehaviour();
     this.MenuBehaviour();
