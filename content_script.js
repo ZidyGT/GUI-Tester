@@ -2,11 +2,10 @@ var id = "[CONTENT SCRIPT] ";
 
 
 var ContentController = function () {
-    this.title;
-    this.pagetTitle;
-    this.port;
+
     this.pageObjects = new Array();
     this.setListener();
+
 };
 
 
@@ -27,10 +26,14 @@ ContentController.prototype.injectScript = function (file, node) {
 };
 
 
-    var conController = new ContentController();
-    //document.getElementsByTagName("body")[0].style.cursor = "crosshair";
-    conController.injectScript(chrome.extension.getURL('jquery.min.js'), 'head');
-    conController.injectScript(chrome.extension.getURL('extension-script.js'), 'head');
+var conController = new ContentController();
+//document.getElementsByTagName("body")[0].style.cursor = "crosshair";
+conController.injectScript(chrome.extension.getURL('jquery.min.js'), 'head');
+conController.injectScript(chrome.extension.getURL('extension-script.js'), 'head');
+var element = $("<img>");
+element.attr({id: "guitest-highlight", src: chrome.extension.getURL("rect.png")});
+element.css({position: "absolute", display: "none"});
+$("body").append(element);
 
 
 

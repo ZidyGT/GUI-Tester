@@ -31,10 +31,7 @@ var GuiTester = function () {
     };
     
     this.doClick = function(){
-        var element = $("<img>");
-        element.attr({id : "guitest-highlight"});
-        element.css({position:"absolute", left:this.offset.x, top:this.offset.y});
-        $("body").append(element);
+        $("#guitest-highlight").css({position:"absolute", left: this.offset.x, top: this.offset.y, display: "block"});
     };
     
     
@@ -62,7 +59,7 @@ var GuiTester = function () {
     this.clearListeners = function () {
         $("#" + this.MainCanvasID).unbind("click",this.mouseListenerOffsetOnMouseClick);
         $("#" + this.MainCanvasID).unbind("click",this.mouseListenerObject);
-         $(document).remove("#guitest-highlight");
+        $("#guitest-highlight").css({display: "none"});
     };
     
     
