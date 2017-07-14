@@ -175,7 +175,7 @@ Controller.prototype.testSheetBehaviour = function () {
                 var check = checkDiv.find(".form-check-input");
                 check.prop({checked: true});
             }.bind(this));
-        } 
+        }
     }.bind(this);
 
     var checks = this.view.testSelectionRender.find(".check-div.check-group");
@@ -325,8 +325,8 @@ Controller.prototype.LeftMenuBehaviour = function () {
                 var Items = $();
                 Checkboxes.each(function (index, elem) {
                     var element = $(elem).parent();
-                    if(!element.hasClass("check-group"))
-                    Items.push(element);
+                    if (!element.hasClass("check-group"))
+                        Items.push(element);
                 }.bind(this));
 
                 Items.each(function (index, item) {
@@ -586,18 +586,20 @@ Controller.prototype.insertCommandOffset = function () {
 };
 
 Controller.prototype.insertUserCommand = function () {
-    var cmd = "var x" + this.model.count + " = window.guitest.ObjectOfCanvas;";
+    var cmd = "var x" + this.model.count + " = window.guitest.event;";
     this.model.count++;
+    var _cmd = "var x" + this.model.count + " = window.guitest.target;";
+    this.model.count++;
+    var __cmd = "x" + (this.model.count-1) + ".dispatchEvent(x" + (this.model.count - 2) + ");";
     this.terminal.exec(cmd, false);
-    var _cmd = "window.guitest.doClick();";
-    this.terminal.exec(cmd, false);
-    this.terminal.echo(_cmd, false);
+    this.terminal.exec(_cmd, false);
+    this.terminal.echo(__cmd, false);
     if (this.record === true) {
-        this.model.actualItem.Add(_cmd);
-        var position = this.editor.session.doc.insertMergedLines(this.editor.getCursorPosition(), ['', '']);
+        this.model.actualItem.Add(__cmd);
+        position = this.editor.session.doc.insertMergedLines(this.editor.getCursorPosition(), ['', '']);
         position.column = 0;
         this.editor.moveCursorToPosition(position);
-        this.editor.insert(_cmd);
+        this.editor.insert(__cmd);
     }
 };
 
@@ -638,32 +640,32 @@ Controller.prototype.runTest = function (scenario, groupName) {
                     chrome.devtools.inspectedWindow.eval(item.command,
                             function (result, exception) {
                                 if (typeof (exception) !== "undefined") {
-                                    if (exception.isException === true  && typeof (run.error) === "undefined")
+                                    if (exception.isException === true && typeof (run.error) === "undefined")
                                     {
                                         this.play = false;
                                         run.AddError(new window.Error(item.line, item.command, exception.value));
                                         this.play = false;
-                                        
-                                        if(typeof(groupName) === "undefined")
+
+                                        if (typeof (groupName) === "undefined")
                                             this.view.renderTestSummary(run, scenario.name);
                                         else
-                                          this.view.renderTestSummaryFromGroup(run, scenario.name, groupName);
-                                      
+                                            this.view.renderTestSummaryFromGroup(run, scenario.name, groupName);
+
                                         this.view.renderScenarios();
                                         this.active();
                                         if (this.view.navbar.find("#nav-summary").hasClass("active"))
                                             this.view.renderContext("summary");
                                     } else if (exception.isError === true)
                                         console.error(exception.code);
-                                } else if(typeof (run.error) === "undefined" && (this.play = true)){
+                                } else if (typeof (run.error) === "undefined" && (this.play = true)) {
                                     if ((run.commands.length - 1) === index) {
-                                        
-                                        if((typeof(groupName) === "undefined") )
+
+                                        if ((typeof (groupName) === "undefined"))
                                             this.view.renderTestSummary(run, scenario.name);
                                         else
-                                          this.view.renderTestSummaryFromGroup(run, scenario.name, groupName);
-                                      
-                                        
+                                            this.view.renderTestSummaryFromGroup(run, scenario.name, groupName);
+
+
                                         this.view.renderScenarios();
                                         this.active();
                                         if (this.view.navbar.find("#nav-summary").hasClass("active"))

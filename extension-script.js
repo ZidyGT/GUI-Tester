@@ -36,12 +36,11 @@ var GuiTester = function () {
     
     
     this.userListener = function (event){
-        var x = event.clientX;
-        var y = event.clientY;
-        this.offset = {x:x, y:y};
+        this.target = event.target;
+        this.event = event;
         var event = new CustomEvent("Interaction", {detail: "user"});
         window.dispatchEvent(event);
-    };
+    }.bind(this);
     
     this.OffsetOnMouseClick = function () {
         $("#" + this.MainCanvasID).click(this.mouseListenerOffset.bind(this));
@@ -52,14 +51,14 @@ var GuiTester = function () {
     };
     
     this.setListenerUserAction = function () {
-        $("#" + this.MainCanvasID).click("click",this.userListener.bind(this));
+        document.addEventListener("click",this.userListener);
     };
 
 
     this.clearListeners = function () {
         $("#" + this.MainCanvasID).unbind("click",this.mouseListenerOffsetOnMouseClick);
         $("#" + this.MainCanvasID).unbind("click",this.mouseListenerObject);
-        $("#guitest-highlight").css({display: "none"});
+        document.removeEventListener("click",this.userListener);
     };
     
     

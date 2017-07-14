@@ -30,10 +30,8 @@ var conController = new ContentController();
 //document.getElementsByTagName("body")[0].style.cursor = "crosshair";
 conController.injectScript(chrome.extension.getURL('jquery.min.js'), 'head');
 conController.injectScript(chrome.extension.getURL('extension-script.js'), 'head');
-var element = $("<img>");
-element.attr({id: "guitest-highlight", src: chrome.extension.getURL("rect.png")});
-element.css({position: "absolute", display: "none"});
-$("body").append(element);
+
+
 
 
 
