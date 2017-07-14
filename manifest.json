@@ -12,7 +12,7 @@
 
   "devtools_page": "devtools.html",
     
-   "web_accessible_resources" : ["extension-script.js", "jquery.min.js", "rect.png"],
+   "web_accessible_resources" : ["extension-script.js", "jquery.min.js"],
   
 
   "permissions": [
