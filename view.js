@@ -114,7 +114,7 @@ View.prototype.insertTestSheet = function () {
     var input = this.constructUnarElement("input", {type: 'text', class: "form-check-input", id: "actual-test-input", placeholder: "Name of test"}, {});
     var button = this.constructElement("button", {type: 'text', class: "btn-xs", id: "actual-test-button", title: "Save test (Enter)"}, {display: "inline-block"});
     var span = this.constructElement("span", {class: "glyphicon glyphicon-floppy-disk"}, {});
-    var ReturnButton = this.constructElement("button", {type: 'text', class: "btn-xs", id: "actual-test-return-button", title: "Return back (End)"}, {});
+    var ReturnButton = this.constructElement("button", {type: 'text', class: "btn-xs", id: "actual-test-return-button", title: "Return back (Delete)"}, {});
     var ReturnSpan = this.constructElement("span", {class: "glyphicon glyphicon glyphicon-remove"}, {});
     var error = this.constructElement("div", {id: "actual-test-error"}, {visibillity: "hidden"});
     form.append(input);
@@ -135,7 +135,7 @@ View.prototype.insertGroupSheet = function ()
     var input = this.constructUnarElement("input", {type: "text", class: "form-check-input", id: "actual-testGroup-input", placeholder: "Name of Group test"}, {});
     var button = this.constructElement("button", {type: "text", class: "btn-xs", id: "actual-testGroup-button", title: "Save test group (Enter)"}, {display: "inline-block"});
     var span = this.constructElement("span", {class: "glyphicon glyphicon glyphicon-floppy-disk"}, {});
-    var ReturnButton = this.constructElement("button", {type: "text", class: "btn-xs", id: "actual-group-return-button", title: "Return back (End)"}, {});
+    var ReturnButton = this.constructElement("button", {type: "text", class: "btn-xs", id: "actual-group-return-button", title: "Return back (Delete)"}, {});
     var ReturnSpan = this.constructElement("span", {class: "glyphicon glyphicon glyphicon-remove"}, {});
     var error = this.constructElement("div", {id: "actual-testGroup-error"}, {visibillity: "hidden"});
     form.append(input);
@@ -243,7 +243,6 @@ View.prototype.getItemScenario = function (scenario) {
     item.append(span);
     return item;
 
-    return item;
 };
 
 View.prototype.getItemGroup = function (group) {

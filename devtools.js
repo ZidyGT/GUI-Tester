@@ -1,10 +1,6 @@
 var id = "[DEVTOOLS PAGE] ";
 
 var DevtoolsController = function (name, icon, panel) {
-    this.ExWindow; // odkaz na okno pro tvorbu sc�n���
-    this.port;
-    this.connection;
-    this.ExPanel;
     this.hasListener = false;
     
     if (!(chrome.devtools.inspectedWindow.tabId === null))//pro pot�ebu testov�n�
@@ -20,8 +16,8 @@ var DevtoolsController = function (name, icon, panel) {
         } else if (msg.detail === "offset") {
             this.ExWindow.controller.insertCommandOffset();
         }    
-        else if (msg.detail === "event") {
-            this.ExWindow.controller.insertEvent();
+        else if (msg.detail === "user") {
+            this.ExWindow.controller.insertUserCommand();
         }  
     }.bind(this);
 };

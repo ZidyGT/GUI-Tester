@@ -55,7 +55,7 @@ Controller.prototype.MenuBehaviour = function () {
             if (item === "reference") {
                 chrome.devtools.inspectedWindow.eval("window.guitest.setListenerGetObject();");
             } else if (item === "action") {
-                chrome.devtools.inspectedWindow.eval("window.guitest.setEventListener();");
+                chrome.devtools.inspectedWindow.eval("window.guitest.setListenerUserAction();");
             } else if (item === "offset") {
                 chrome.devtools.inspectedWindow.eval("window.guitest.OffsetOnMouseClick();");
             }
@@ -585,23 +585,22 @@ Controller.prototype.insertCommandOffset = function () {
     this.terminal.exec(cmd, false);
 };
 
-Controller.prototype.insertEvent = function () {
-    var cmd = "var x" + this.model.count + " = window.guitest.Element;";
+Controller.prototype.insertUserCommand = function () {
+    var cmd = "var x" + this.model.count + " = window.guitest.ObjectOfCanvas;";
     this.model.count++;
-    var _cmd = "var x" + this.model.count + " = window.guitest.Event;";
-    this.model.count++;
-    var __cmd = "$(x" + this.model.count - 2 + ").trigger(x" + this.model.count - 1 + ");";
     this.terminal.exec(cmd, false);
-    this.terminal.exec(_cmd, false);
+    var _cmd = "window.guitest.doClick();";
+    this.terminal.exec(cmd, false);
+    this.terminal.echo(_cmd, false);
     if (this.record === true) {
-        this.model.actualItem.Add(__cmd);
+        this.model.actualItem.Add(_cmd);
         var position = this.editor.session.doc.insertMergedLines(this.editor.getCursorPosition(), ['', '']);
         position.column = 0;
         this.editor.moveCursorToPosition(position);
-        this.editor.insert(__cmd);
+        this.editor.insert(_cmd);
     }
-    this.terminal.echo(__cmd);
 };
+
 
 Controller.prototype.active = function () {
     this.testSheetBehaviour();
@@ -624,12 +623,12 @@ Controller.prototype.proceedTest = function (scenareId) {
 Controller.prototype.proceedTestFromGroup = function (scenareId, groupId) {
     var scenare = this.model.getScenareFromGroup(scenareId, groupId);
     var name = this.model.getGroupName(groupId);
-    this.runTestFromGroup(scenare, name);
+    this.runTest(scenare, name);
     this.model.setScenare(scenare);
 };
 
 
-Controller.prototype.runTest = function (scenario) {
+Controller.prototype.runTest = function (scenario, groupName) {
     var run = new window.Run(scenario.commands, this.model.genId());
     run.timestamp = new window.moment();
     this.play = true;
@@ -639,20 +638,32 @@ Controller.prototype.runTest = function (scenario) {
                     chrome.devtools.inspectedWindow.eval(item.command,
                             function (result, exception) {
                                 if (typeof (exception) !== "undefined") {
-                                    if (exception.isException === true)
+                                    if (exception.isException === true  && typeof (run.error) === "undefined")
                                     {
+                                        this.play = false;
                                         run.AddError(new window.Error(item.line, item.command, exception.value));
                                         this.play = false;
-                                        this.view.renderTestSummary(run, scenario.name);
+                                        
+                                        if(typeof(groupName) === "undefined")
+                                            this.view.renderTestSummary(run, scenario.name);
+                                        else
+                                          this.view.renderTestSummaryFromGroup(run, scenario.name, groupName);
+                                      
                                         this.view.renderScenarios();
                                         this.active();
                                         if (this.view.navbar.find("#nav-summary").hasClass("active"))
                                             this.view.renderContext("summary");
                                     } else if (exception.isError === true)
                                         console.error(exception.code);
-                                } else if(typeof (run.error) === "undefined"){
+                                } else if(typeof (run.error) === "undefined" && (this.play = true)){
                                     if ((run.commands.length - 1) === index) {
-                                        this.view.renderTestSummary(run, scenario.name);
+                                        
+                                        if((typeof(groupName) === "undefined") )
+                                            this.view.renderTestSummary(run, scenario.name);
+                                        else
+                                          this.view.renderTestSummaryFromGroup(run, scenario.name, groupName);
+                                      
+                                        
                                         this.view.renderScenarios();
                                         this.active();
                                         if (this.view.navbar.find("#nav-summary").hasClass("active"))
@@ -665,41 +676,5 @@ Controller.prototype.runTest = function (scenario) {
     this.play = false;
 };
 
-Controller.prototype.runTestFromGroup = function (scenario, groupName) {
-    var run = new window.Run(scenario.commands, this.model.genId());
-    
-    run.timestamp = new window.moment();
-    this.play = true;
-    run.commands.forEach(
-            function (item, index) {
-                if (this.play === true)
-                    chrome.devtools.inspectedWindow.eval(item.command,
-                            function (result, exception) {
-                                if (typeof (exception) !== "undefined") {
-                                    if (exception.isException === true)
-                                    {
-                                        run.AddError(new window.Error(item.line, item.command, exception.value));
-                                        this.play = false;
-                                        this.view.renderTestSummaryFromGroup(run, scenario.name, groupName);
-                                        this.view.renderScenarios();
-                                        this.active();
-                                        if (this.view.navbar.find("#nav-summary").hasClass("active"))
-                                            this.view.renderContext("summary");
-                                    } else if (exception.isError === true)
-                                        console.error(exception.code);
-                                } else if(typeof (run.error) === "undefined"){
-                                    if ((run.commands.length - 1) === index) {
-                                        this.view.renderTestSummaryFromGroup(run, scenario.name, groupName);
-                                        this.view.renderScenarios();
-                                        this.active();
-                                        if (this.view.navbar.find("#nav-summary").hasClass("active"))
-                                            this.view.renderContext("summary");
-                                    }
-                                }
-                            }.bind(this));
-            }.bind(this));
-    scenario.runs.push(run);
-    this.play = false;
-};
 
 

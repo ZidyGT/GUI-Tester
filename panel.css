@@ -106,6 +106,7 @@ body {
 .panel-footer {
     color:#a22d2d;
     font-weight: 700;
+    overflow:scroll;
 }
 .panel > span{
     display:block;

@@ -37,7 +37,8 @@ Scenare.prototype.Add = function (cmd) {
 
 Scenare.prototype.pushCommands = function (cmds) {
     cmds.forEach(function (item) {
-        this.Add(item);
+        if(item !== "")
+            this.Add(item);
     }.bind(this));
 };
 

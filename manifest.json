@@ -3,7 +3,7 @@
 
   "name": "GUI Tester",
   "description": "This extension test GUI elements of web page",
-  "version": "0.3",
+  "version": "1.0",
 
   "background": {
     "scripts": ["background.js"],
